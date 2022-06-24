@@ -40,6 +40,7 @@ When planning a trip to a new (or old) place, we're often using multiple pages, 
 - As a traveller, I want to find the best locations to visit in this new city.
 - As a traveller, I need to know the best way to get to each location.
 - As a traveller, I want to be able to access this planning website even while on the road (through my phone).
+- As a traveller, I want to print out my itinerary after planning it online.
 - As a planner, I want to find the best order of places to visit to maximize the amount of time I have at each location.
 - As a planner, I want to personalize my website/planner.
 - As a planner, I want to create different lists so my ideas don't become convoluted.
@@ -49,3 +50,4 @@ When planning a trip to a new (or old) place, we're often using multiple pages, 
 - As a planner, I want to find what other travelers in the same area choose to do so I can use their plan as a template for my own.
 - As a planner, I want to connect and group locations based on their type or distance so I can efficiently visit each one.
 - As a planner, I want to save past trips so I can reflect and know what I should do in the future.
+- As a planner, I want to filter the events by days.
