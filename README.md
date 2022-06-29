@@ -51,3 +51,22 @@ When planning a trip to a new (or old) place, we're often using multiple pages, 
 - As a planner, I want to connect and group locations based on their type or distance so I can efficiently visit each one.
 - As a planner, I want to save past trips so I can reflect and know what I should do in the future.
 - As a planner, I want to filter the events by days.
+
+## Limitations
+- The Google Maps API gives you $200 per month to use, but once you surpass that (too many API calls), you will be charged. This means there is a limit to how often this site can be tested/used (and by how many users)
+    - I will need to add something in the code to send an error and not call the api when near the max quota.
+    - This will be difficult to test. (only 40 requests for directions can be made per month)
+    - Embedding the map is free. This will only affect getting directions.
+    - It may not be feasible to calculate directions on this website. This may need to be left up to the user.
+    - Check out personal alternatives here: https://www.igismap.com/top-10-map-direction-api-routing-libraries-navigation-free-or-paid/
+- Can I webscrape Google Search Results? (need to learn)
+    - This will get the recommendations of things to do
+    
+## Notes
+  - Walkability score api: https://www.walkscore.com/professional/api.php
+  - Elevation data api: https://www.opentopodata.org/
+    - 1000 calls per day max
+  - Geocoding api: https://developers.google.com/maps/documentation/geocoding/overview
+    - in case I need to convert addresses to coordinates for other api calls (or vice versa)
+  - Weather api: https://openweathermap.org/api
+    - 1000 calls per day
