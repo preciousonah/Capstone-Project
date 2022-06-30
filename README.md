@@ -70,3 +70,5 @@ When planning a trip to a new (or old) place, we're often using multiple pages, 
     - in case I need to convert addresses to coordinates for other api calls (or vice versa)
   - Weather api: https://openweathermap.org/api
     - 1000 calls per day
+  - Changing map markers (put pictures/icons, change color): https://developers.google.com/maps/documentation/javascript/custom-markers#maps_custom_markers-html
+  - Embed map and edit the embedding: https://developers.google.com/maps/documentation/embed/map-generator
