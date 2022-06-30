@@ -1,0 +1,7 @@
+.maps-container{
+    border: dashed 3px rgb(85, 38, 0);
+    height: 84vh;
+    margin: 1.4vh 1.4vh;
+    border-radius: 20px;
+    padding: 3vh 3vw;
+}

@@ -1,0 +1,14 @@
+body {
+	font-family: "Nunito", sans-serif;
+	margin: 0px;
+	color: rgb(85, 38, 0);
+	overflow-x: hidden;
+}
+
+a {
+	text-decoration: none;
+}
+
+.main-page {
+	display: flex;
+}

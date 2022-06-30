@@ -1,0 +1,30 @@
+.notes-container {
+	background-color: bisque;
+	height: 84vh;
+	border-radius: 20px;
+	padding: 3vh 3vw;
+	overflow-y: scroll;
+	margin: 1.4vh 1.4vh;
+}
+
+.note-input {
+	background-color: transparent;
+	border: none;
+	width: 100%;
+	height: 84%;
+	color: rgb(85, 38, 0);
+	outline: none;
+	font-size: 14px;
+    font-family: "Nunito", sans-serif;
+	resize: none;
+}
+
+#save-note-button{
+	cursor: pointer;
+	background-color: rgb(85, 38, 0);
+	color: white;
+	border: none;
+	border-radius: 20px;
+	padding: 10px;
+	width: 100%;
+}
