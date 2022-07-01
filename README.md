@@ -55,7 +55,7 @@ When planning a trip to a new (or old) place, we're often using multiple pages, 
 ## Limitations
 - The Google Maps API gives you $200 per month to use, but once you surpass that (too many API calls), you will be charged. This means there is a limit to how often this site can be tested/used (and by how many users)
     - I will need to add something in the code to send an error and not call the api when near the max quota.
-    - This will be difficult to test. (only 40 requests for directions can be made per month)
+    - This will be difficult to test. (only 40,000 requests for directions can be made per month)
     - Embedding the map is free. This will only affect getting directions.
     - It may not be feasible to calculate directions on this website. This may need to be left up to the user.
     - Check out personal alternatives here: https://www.igismap.com/top-10-map-direction-api-routing-libraries-navigation-free-or-paid/
