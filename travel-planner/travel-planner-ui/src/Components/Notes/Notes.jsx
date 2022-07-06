@@ -1,31 +1,48 @@
-import "./Notes.css"
+import "./Notes.css";
 
-export default function Notes({notesText, handleSaveOnClick, updateNoteChange}) {
-    return (
-        <div className="notes-container">
-            <h2>
-                Notes
-            </h2>
-            <textarea type='text' className="note-input"></textarea>
-            <button id="save-note-button">Save</button>
-        </div>
-    )
+export default function Notes({
+	notesText,
+	handleSaveOnClick,
+	updateNoteChange,
+}) {
+	return (
+		<div className="notes-container">
+			<form onSubmit={handleSaveOnClick}>
+				<input
+					onChange={updateNoteChange}
+					type="text"
+					id="note-title-input"
+                    value={notesText.title}
+                    required
+                    // onInvalid={}
+				/>
+				<textarea
+					onChange={updateNoteChange}
+					type="text"
+					id="note-input"
+					value={notesText.text}
+				></textarea>
+				<button id="save-note-button">Save</button>
+			</form>
+
+		</div>
+	);
 }
 
 // save whatever the user types
-    // create an onChange function to update note-input AND save the input to json.
-    // when should this be saved? On change?
-    // save button
+// create an onChange function to update note-input AND save the input to json.
+// when should this be saved? On change?
+// save button
 
 // need to open the note and fill it with text as well.
 
 // handleSaveOnClick (for button)
-    // should send post request to save data to database
+// should send post request to save data to database
 
 // updateNoteChange (for note-input)
-    // update the value of the note each time
-    // create a state for this?
-    // then we can just set the value to that state's saved input
+// update the value of the note each time
+// create a state for this?
+// then we can just set the value to that state's saved input
 
 // we should be able to open two notes at once.
 
