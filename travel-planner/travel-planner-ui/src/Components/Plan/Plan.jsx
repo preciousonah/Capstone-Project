@@ -2,16 +2,15 @@ import "./Plan.css";
 import Notes from "../Notes/Notes";
 import Maps from "../Maps/Maps";
 
+import { UserContext } from "../../UserContext";
 
-import { UserContext } from "../../UserContext"
-
-import { useState,useContext } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 
 export default function Plan(props) {
-	const {sessionToken, signUpUser, logInUser, logOutUser} = useContext(UserContext)
-    console.log("Login: ", sessionToken)
-
+	const { sessionToken, signUpUser, logInUser, logOutUser } =
+		useContext(UserContext);
+	console.log("Login: ", sessionToken);
 
 	const [curNote, setCurNote] = useState({ title: "Note", text: "" });
 	const [isOpen, setIsOpen] = useState(false);
