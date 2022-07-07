@@ -15,6 +15,15 @@
 }
 
 .nav-item:hover {
-    text-shadow: 2px 2px rgba(97, 56, 56, 0.404);
+    text-shadow: 0.08vw 0.12vh rgb(136, 92, 57);
+    font-weight: bold;
     cursor: pointer;
+}
+
+.nav-left {
+    flex: 5;
+}
+
+.nav-right {
+    flex: 1;
 }
