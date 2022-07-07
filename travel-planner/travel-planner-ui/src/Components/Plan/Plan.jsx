@@ -10,10 +10,14 @@ import axios from "axios";
 export default function Plan(props) {
 	const { sessionToken, signUpUser, logInUser, logOutUser } =
 		useContext(UserContext);
-	console.log("Login: ", sessionToken);
 
 	const [curNote, setCurNote] = useState({ title: "Note", text: "" });
 	const [isOpen, setIsOpen] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
+
+	const updateMapsSearchChange = () => {
+		/* */
+	};
 
 	const updateNoteChange = () => {
 		const noteTitleInputElement = document.getElementById("note-title-input");
@@ -60,7 +64,10 @@ export default function Plan(props) {
 				<div id="map">
 					{/* insert map here */}
 					{/* Figure out how to add pins to the map here. */}
-					<Maps />
+					<Maps
+						searchOnChange={updateMapsSearchChange}
+						searchTerm={searchTerm}
+					/>
 				</div>
 			</div>
 			<div className="right-app">

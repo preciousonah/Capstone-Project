@@ -31,11 +31,11 @@
 	color: rgb(85, 38, 0);
 	outline: none;
 	font-size: 1.3vh;
-    font-family: "Nunito", sans-serif;
+	font-family: "Nunito", sans-serif;
 	resize: none;
 }
 
-#save-note-button{
+#save-note-button {
 	cursor: pointer;
 	background-color: rgb(85, 38, 0);
 	color: white;
