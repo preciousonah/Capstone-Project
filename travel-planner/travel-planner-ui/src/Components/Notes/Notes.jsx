@@ -12,9 +12,9 @@ export default function Notes({
 					onChange={updateNoteChange}
 					type="text"
 					id="note-title-input"
-                    value={notesText.title}
-                    required
-                    // onInvalid={}
+					value={notesText.title}
+					required
+					// onInvalid={}
 				/>
 				<textarea
 					onChange={updateNoteChange}
@@ -24,7 +24,6 @@ export default function Notes({
 				></textarea>
 				<button id="save-note-button">Save</button>
 			</form>
-
 		</div>
 	);
 }
