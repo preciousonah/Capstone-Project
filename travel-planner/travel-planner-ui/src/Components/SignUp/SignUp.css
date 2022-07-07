@@ -3,6 +3,13 @@
 	justify-content: center;
 }
 
+
+#sign-up-page h1 {
+    padding-top: 0px;
+    margin-bottom: 0.5vh;
+    letter-spacing: 1vh;
+}
+
 #sign-up-page p {
 	color: rgba(85, 38, 0, 0.575);
 	font-size: 2vh;

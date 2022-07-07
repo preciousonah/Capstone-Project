@@ -25,11 +25,9 @@ export default function SignUp({ signUpOnClick }) {
 					type="password"
 					placeholder="Password"
 				/>
-				<Link to="/">
-					<button onClick={signUpOnClick} className="auth-button">
-						SIGN UP
-					</button>
-				</Link>
+				<button onClick={signUpOnClick} className="auth-button">
+					SIGN UP
+				</button>
 				<Link to="/">
 					<p>Already have an account? Log in!</p>
 				</Link>

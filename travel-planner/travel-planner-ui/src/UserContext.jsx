@@ -12,9 +12,9 @@ export function UserContextProvider({children}) {
 		// Create new user account
 		axios
 			.post(`http://localhost:${PORT}/users/register`, {
-				username: document.getElementById("username").value,
-				email: document.getElementById("email").value,
-				password: document.getElementById("password").value,
+				username: document.getElementById("signup-username").value,
+				email: document.getElementById("signup-email").value,
+				password: document.getElementById("signup-password").value,
 			})
 			.then(function (response) {
 				console.log(response);
@@ -23,9 +23,11 @@ export function UserContextProvider({children}) {
 				console.log(error);
 			});
 
-		document.getElementById("username").value = "";
-		document.getElementById("email").value = "";
-		document.getElementById("password").value = "";
+		document.getElementById("signup-username").value = "";
+		document.getElementById("signup-email").value = "";
+		document.getElementById("signup-password").value = "";
+
+		window.location.assign("/")
 	};
 
 	const logInUser = () => {

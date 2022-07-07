@@ -24,7 +24,7 @@ export default function App() {
 					<Routes>
 						{!sessionToken ? (
 							<>
-								<Route path="/signUp" element={<SignUp />} />
+								<Route path="/signUp" element={<SignUp signUpOnClick={signUpUser}/>} />
 								<Route path="*" element={<Login logInOnClick={logInUser} />} />
 							</>
 						) : (
