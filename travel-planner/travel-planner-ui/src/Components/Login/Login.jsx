@@ -1,11 +1,15 @@
 import "./Login.css";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../../UserContext";
 
 export default function Login() {
-	const { logInUser, logInFormInput, setLogInFormInput } =
-		useContext(UserContext);
+	const { logInUser } = useContext(UserContext);
+
+	const [logInFormInput, setLogInFormInput] = useState({
+		username: "",
+		password: "",
+	});
 
 	return (
 		<div id="login-page">
@@ -38,7 +42,10 @@ export default function Login() {
 						})
 					}
 				/>
-				<button onClick={logInUser} className="auth-button">
+				<button
+					onClick={() => logInUser(logInFormInput)}
+					className="auth-button"
+				>
 					LOG IN
 				</button>
 				<p className="forgot-password-button">Forgot password?</p>

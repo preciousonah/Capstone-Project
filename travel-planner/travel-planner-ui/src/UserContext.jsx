@@ -7,17 +7,8 @@ const PORT = 3001;
 
 export function UserContextProvider({ children }) {
 	const [sessionToken, setSessionToken] = React.useState(null);
-	const [logInFormInput, setLogInFormInput] = React.useState({
-		username: "",
-		password: "",
-	});
-	const [signUpFormInput, setSignUpFormInput] = React.useState({
-		username: "",
-		email: "",
-		password: "",
-	});
 
-	const signUpUser = () => {
+	const signUpUser = (signUpFormInput) => {
 		// Create new user account
 		axios
 			.post(`http://localhost:${PORT}/users/register`, {
@@ -32,12 +23,10 @@ export function UserContextProvider({ children }) {
 				console.log(error);
 			});
 
-		setSignUpFormInput({ username: "", email: "", password: "" });
-
 		window.location.assign("/");
 	};
 
-	const logInUser = () => {
+	const logInUser = (logInFormInput) => {
 		axios
 			.post(`http://localhost:${PORT}/users/login`, {
 				username: logInFormInput.username,
@@ -50,8 +39,6 @@ export function UserContextProvider({ children }) {
 			.catch(function (error) {
 				console.log(error);
 			});
-
-		setLogInFormInput({ username: "", password: "" });
 	};
 
 	const logOutUser = () => {
@@ -66,10 +53,6 @@ export function UserContextProvider({ children }) {
 		signUpUser: signUpUser,
 		logInUser: logInUser,
 		logOutUser: logOutUser,
-		logInFormInput: logInFormInput,
-		setLogInFormInput: setLogInFormInput,
-		signUpFormInput: signUpFormInput,
-		setSignUpFormInput: setSignUpFormInput,
 	};
 
 	return (
