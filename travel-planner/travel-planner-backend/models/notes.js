@@ -25,18 +25,17 @@ class Notes {
 		return newNote;
 	}
 
-    static updateNote(savedTitle, curTitle, content) {
-        // Fetch the note from our database
-        const curNote = notesDb.notes[savedTitle]
+	static updateNote(savedTitle, curTitle, content) {
+		// Fetch the note from our database
+		const curNote = notesDb.notes[savedTitle];
 
-        // Update the information
-        curNote.content = content
-        curNote.title = curTitle
+		// Update the information
+		curNote.content = content;
+		curNote.title = curTitle;
 
-        // Rewrite the updated information in our database
+		// Rewrite the updated information in our database
 		const notesDbJson = JSON.stringify(notesDb, null, 4);
-        fs.writeFileSync("./data/userNotes.json", notesDbJson, "utf-8");
-
+		fs.writeFileSync("./data/userNotes.json", notesDbJson, "utf-8");
 	}
 
 	static openNote(title) {

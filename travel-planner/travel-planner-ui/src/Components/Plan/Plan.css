@@ -1,11 +1,10 @@
-.plan-page{
-
+.plan-page {
 }
 
-.left-app{
-    flex: 2;
+.left-app {
+	flex: 2;
 }
 
 .right-app {
-    flex: 1;
+	flex: 1;
 }
