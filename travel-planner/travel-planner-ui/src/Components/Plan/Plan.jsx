@@ -15,8 +15,8 @@ export default function Plan(props) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 
-	const updateMapsSearchChange = () => {
-		/* */
+	const updateMapsSearchChange = (value) => {
+		setSearchTerm(value);
 	};
 
 	const updateNoteChange = () => {

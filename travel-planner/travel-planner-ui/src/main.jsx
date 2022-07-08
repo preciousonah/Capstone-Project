@@ -1,9 +1,9 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import ReactDOM from "react-dom";
 import App from "./Components/App/App";
 import "./globals.css";
 
-import { UserContextProvider } from "./UserContext"
+import { UserContextProvider } from "./UserContext";
 
 ReactDOM.render(
 	<React.StrictMode>

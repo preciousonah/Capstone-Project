@@ -11,8 +11,7 @@ import { UserContext } from "../../UserContext";
 const PORT = 3001;
 
 export default function App() {
-	const { sessionToken, signUpUser, logInUser, logOutUser } =
-		React.useContext(UserContext);
+	const { sessionToken } = React.useContext(UserContext);
 
 	return (
 		<div className="app">
@@ -24,11 +23,8 @@ export default function App() {
 					<Routes>
 						{!sessionToken ? (
 							<>
-								<Route
-									path="/signUp"
-									element={<SignUp signUpOnClick={signUpUser} />}
-								/>
-								<Route path="*" element={<Login logInOnClick={logInUser} />} />
+								<Route path="/signUp" element={<SignUp />} />
+								<Route path="*" element={<Login />} />
 							</>
 						) : (
 							<>
