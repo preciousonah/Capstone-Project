@@ -1,23 +1,16 @@
 import * as React from "react";
 import axios from "axios";
 
+import { CookiesProvider, useCookies } from "react-cookie";
+
 export const UserContext = React.createContext(null);
 
 const PORT = 3001;
 
 export function UserContextProvider({ children }) {
-	const [sessionToken, setSessionToken] = React.useState(null);
-	const [logInFormInput, setLogInFormInput] = React.useState({
-		username: "",
-		password: "",
-	});
-	const [signUpFormInput, setSignUpFormInput] = React.useState({
-		username: "",
-		email: "",
-		password: "",
-	});
+	const [cookies, setCookie, removeCookie] = useCookies(["sessionToken"]);
 
-	const signUpUser = () => {
+	const signUpUser = (signUpFormInput) => {
 		// Create new user account
 		axios
 			.post(`http://localhost:${PORT}/users/register`, {
@@ -32,47 +25,45 @@ export function UserContextProvider({ children }) {
 				console.log(error);
 			});
 
-		setSignUpFormInput({ username: "", email: "", password: "" });
-
 		window.location.assign("/");
 	};
 
-	const logInUser = () => {
+	const logInUser = (logInFormInput) => {
 		axios
 			.post(`http://localhost:${PORT}/users/login`, {
 				username: logInFormInput.username,
 				password: logInFormInput.password,
 			})
 			.then(function (response) {
-				setSessionToken(response.data.sessionToken);
+				setCookie("sessionToken", response.data.sessionToken, { path: "/" });
 				console.log(response);
 			})
 			.catch(function (error) {
 				console.log(error);
 			});
-
-		setLogInFormInput({ username: "", password: "" });
 	};
 
 	const logOutUser = () => {
 		axios.post(`http://localhost:${PORT}/users/logout`, {
-			sessionToken: sessionToken,
+			sessionToken: cookies.sessionToken,
 		});
-		setSessionToken(null);
+		if (cookies.sessionToken) {
+			removeCookie("sessionToken", { path: "/" });
+		}
 	};
 
 	const contextValue = {
-		sessionToken: sessionToken,
+		sessionToken: cookies.sessionToken,
 		signUpUser: signUpUser,
 		logInUser: logInUser,
 		logOutUser: logOutUser,
-		logInFormInput: logInFormInput,
-		setLogInFormInput: setLogInFormInput,
-		signUpFormInput: signUpFormInput,
-		setSignUpFormInput: setSignUpFormInput,
 	};
 
 	return (
-		<UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
+		<CookiesProvider>
+			<UserContext.Provider value={contextValue}>
+				{children}
+			</UserContext.Provider>
+		</CookiesProvider>
 	);
 }

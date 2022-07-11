@@ -1,11 +1,16 @@
 import "./SignUp.css";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../../UserContext";
 
 export default function SignUp() {
-	const { signUpUser, signUpFormInput, setSignUpFormInput } =
-		useContext(UserContext);
+	const { signUpUser } = useContext(UserContext);
+
+	const [signUpFormInput, setSignUpFormInput] = useState({
+		username: "",
+		email: "",
+		password: "",
+	});
 
 	return (
 		<div id="sign-up-page">
@@ -54,7 +59,10 @@ export default function SignUp() {
 						})
 					}
 				/>
-				<button onClick={signUpUser} className="auth-button">
+				<button
+					onClick={() => signUpUser(signUpFormInput)}
+					className="auth-button"
+				>
 					SIGN UP
 				</button>
 				<Link to="/">
