@@ -7,6 +7,10 @@ import { UserContext } from "../../UserContext";
 import { useState, useContext } from "react";
 import axios from "axios";
 
+import { Wrapper, Status } from "@googlemaps/react-wrapper";
+
+const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
+
 export default function Plan(props) {
 	const { sessionToken, signUpUser, logInUser, logOutUser } =
 		useContext(UserContext);
@@ -58,17 +62,24 @@ export default function Plan(props) {
 		setIsOpen(false);
 	};
 
+	const render = () => {
+		console.log("Not working/loading rendering?")
+		return <h1>Not working</h1>;
+	};
+
 	return (
 		<div className="plan-page main-page">
 			<div className="left-app">
-				<div id="map">
-					{/* insert map here */}
-					{/* Figure out how to add pins to the map here. */}
-					<Maps
-						searchOnChange={updateMapsSearchChange}
-						searchTerm={searchTerm}
-					/>
-				</div>
+				<Wrapper apiKey={API_KEY} render={render}>
+					<div id="map">
+						{/* insert map here */}
+						{/* Figure out how to add pins to the map here. */}
+						<Maps
+							searchOnChange={updateMapsSearchChange}
+							searchTerm={searchTerm}
+						/>
+					</div>
+				</Wrapper>
 			</div>
 			<div className="right-app">
 				<Notes
