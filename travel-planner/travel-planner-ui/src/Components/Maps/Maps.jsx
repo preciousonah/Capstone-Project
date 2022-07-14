@@ -166,30 +166,6 @@ export default function Maps({ searchOnChange, searchTerm, setCurNote }) {
 		}, [options]);
 
 		return null;
-
-		// ---- INFO WINDOW!!
-
-		// 	// add event listener: double click
-		// 	// add event listener: on enter, takes in event like above
-
-		// 	// add event listener: on click (button), then render the note on the right.
-		// 				// Add a state variable, set this variable to the note that we click on. By default it is null so we should have a blank or nothing there?
-		// 				// then in plan... we render a new note which is attatched to this
-		// 						// query the note from the database with the title of the id of the pin (all pins need a unique id, also from querying the database),
-		// 						// if no note exists for that pin, display an empty note with the title as the title of the note?
-		// 						// so on click ==> call backend, then set the state variable to be the note's contents.
-		// 						// for now, let's just set the content by default
-
-		// 	const infoWindow = new google.maps.InfoWindow({
-		// 		content: content
-		// 	});
-
-		// 	// google.maps.event.addListener(infoWindow, 'domready', () => {
-		// 	// 	const infoWindowTitle = document.getElementById('')
-		// 	// 	// how do I event set it by id??
-		// 	// })
-
-		// -------
 	};
 
 	return (
