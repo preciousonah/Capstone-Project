@@ -1,31 +1,127 @@
 import "./Maps.css";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, createElement, Component } from "react";
+import { render } from "react-dom";
 
-const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
-// new pin: lat: 37.499468, lng: -122.143871
+export default function Maps({ searchOnChange, searchTerm, setCurNote }) {
+	class Popup extends google.maps.OverlayView {
+		constructor(position, adjustTitle, setAdjustTitle, curTitle, setCurTitle) {
+			super();
 
-export default function Maps({ searchOnChange, searchTerm }) {
+			this.position = position;
+			this.new = true;
+
+			const content = (
+				<div className="info-window-content popup-bubble" id={`${curTitle}`}>
+					<div className="info-window-top-container">
+						{adjustTitle ? (
+							<input
+								className="info-window-title"
+								onKeyDown={(event) => {
+									if (event.key === "Enter") {
+										setAdjustTitle(false);
+									}
+								}}
+								onChange={(event) => setCurTitle(event.currentTarget.value)}
+								value={curTitle}
+							/>
+						) : (
+							<h2
+								onDoubleClick={() => setAdjustTitle(true)}
+								className="info-window-title"
+							>
+								{curTitle}
+							</h2>
+						)}
+						<button
+							onClick={() => this.onRemove(this)}
+							className="close-info-window-button"
+						>
+							x
+						</button>
+					</div>
+					<p>Address: from search term or inverse geocode?</p>
+					<div className="info-window-note">
+						<button> Open Note </button>
+					</div>
+				</div>
+			);
+
+			const bubbleAnchor = createElement(
+				"div",
+				{ className: "popup-bubble-anchor" },
+				content
+			);
+
+			this.containerDiv = document.createElement("div");
+			this.containerDiv.classList.add("popup-container");
+			this.containerDiv.style.display = "none";
+
+			render(bubbleAnchor, this.containerDiv);
+		}
+
+		onAdd() {
+			// This function is automatically called when the popup is added to the map
+			if (this.new) {
+				this.new = false;
+			} else {
+				this.getPanes().floatPane.appendChild(this.containerDiv);
+			}
+		}
+
+		onRemove(newThis = this) {
+			// Automatically called when popup is removed from the map
+
+			if (newThis.containerDiv.parentElement) {
+				newThis.containerDiv.parentElement.removeChild(newThis.containerDiv);
+			}
+		}
+
+		draw() {
+			// Called each frame when the popup needs to draw itself
+
+			const newDivPosition = this.getProjection().fromLatLngToDivPixel(
+				this.position
+			);
+
+			// Hide the popup when it is out of view
+			const display =
+				Math.abs(newDivPosition.x) < 4000 && Math.abs(newDivPosition.y) < 4000
+					? "block"
+					: "none";
+
+			if (display === "block") {
+				this.containerDiv.style.left = newDivPosition.x + "px";
+				this.containerDiv.style.top = newDivPosition.y + "px";
+			}
+
+			if (this.containerDiv.style.display !== display) {
+				this.containerDiv.style.display = display;
+			}
+		}
+	}
+
+	const ref = useRef(null);
+	const [map, setMap] = useState();
 
 	const mapInit = () => {
-		const ref = useRef(null);
-		const [map, setMap] = useState();
-
 		useEffect(() => {
+			console.log("Map rerendered!");
 			if (ref.current && !map) {
 				setMap(
 					new window.google.maps.Map(ref.current, {
-						zoom: 12,
-						center: { lat: 37.7749, lng: -122.4194 },
+						center: { lat: 30, lng: 0 }, // by default
+						zoom: 3,
 					})
 				);
 			}
 		}, [ref, map]);
 
-		// add an onClick function to the marker
-		// Not really a reason to add a key either
+		const image =
+			"https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"; // test image of a flag so we can see where the pin is!
 
-		const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png" // test image of a flag so we can see where the pin is!
+		// map.addListener("click", (event) => {
+		// 	map.panTo(event.latLng)
+		// })
 
 		return (
 			<div
@@ -33,34 +129,67 @@ export default function Maps({ searchOnChange, searchTerm }) {
 				ref={ref}
 				style={{ flexGrow: "1", height: "100%" }}
 			>
-				{/* Add sample pin */}
-				<Marker map={map} title="Home in the Bay" position={{ lat: 37.580952, lng: -122.065219 }} icon={ image}></Marker>
+				{createNewMarker({
+					position: { lat: 37.499468, lng: -122.143871 },
+					title: "MPK Office",
+					icon: image,
+					map: map,
+				})}
 			</div>
 		);
 	};
 
-	const Marker = (options) => {
-		const [marker, setMarker] = useState();
+	const createNewMarker = (options) => {
+		const [adjustTitle, setAdjustTitle] = useState(false);
+		const [curTitle, setCurTitle] = useState(options.title);
 
 		useEffect(() => {
-			if (!marker) {
-				setMarker(new google.maps.Marker());
-			}
+			const marker = new google.maps.Marker(options);
+
+			const popup = new Popup(
+				options.position,
+				adjustTitle,
+				setAdjustTitle,
+				curTitle,
+				setCurTitle
+			);
+			popup.setMap(map);
+			popup.onRemove();
+
+			marker.addListener("click", () => {
+				popup.onAdd();
+			});
 
 			return () => {
-				if (marker) {
-					marker.setMap(null);
-				}
+				marker.setMap(null);
 			};
-		}, [marker]);
-
-		useEffect(() => {
-			if (marker) {
-				marker.setOptions(options)
-			}
-		}, [marker, options]);
+		}, [options]);
 
 		return null;
+
+		// ---- INFO WINDOW!!
+
+		// 	// add event listener: double click
+		// 	// add event listener: on enter, takes in event like above
+
+		// 	// add event listener: on click (button), then render the note on the right.
+		// 				// Add a state variable, set this variable to the note that we click on. By default it is null so we should have a blank or nothing there?
+		// 				// then in plan... we render a new note which is attatched to this
+		// 						// query the note from the database with the title of the id of the pin (all pins need a unique id, also from querying the database),
+		// 						// if no note exists for that pin, display an empty note with the title as the title of the note?
+		// 						// so on click ==> call backend, then set the state variable to be the note's contents.
+		// 						// for now, let's just set the content by default
+
+		// 	const infoWindow = new google.maps.InfoWindow({
+		// 		content: content
+		// 	});
+
+		// 	// google.maps.event.addListener(infoWindow, 'domready', () => {
+		// 	// 	const infoWindowTitle = document.getElementById('')
+		// 	// 	// how do I event set it by id??
+		// 	// })
+
+		// -------
 	};
 
 	return (
@@ -74,13 +203,6 @@ export default function Maps({ searchOnChange, searchTerm }) {
 			</div>
 
 			{mapInit()}
-
-			{/* <iframe
-				frameBorder="0"
-				referrerPolicy="no-referrer-when-downgrade"
-				src={`https://www.google.com/maps/embed/v1/${MAP_MODE}?key=${API_KEY}&${PARAMETERS}`}
-				className="embedded-map"
-			></iframe> */}
 		</div>
 	);
 }

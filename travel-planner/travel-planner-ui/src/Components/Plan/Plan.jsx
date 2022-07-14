@@ -63,7 +63,7 @@ export default function Plan(props) {
 	};
 
 	const render = () => {
-		console.log("Not working/loading rendering?")
+		console.log("Not working/loading rendering?");
 		return <h1>Not working</h1>;
 	};
 
@@ -77,6 +77,7 @@ export default function Plan(props) {
 						<Maps
 							searchOnChange={updateMapsSearchChange}
 							searchTerm={searchTerm}
+							setCurNote={setCurNote}
 						/>
 					</div>
 				</Wrapper>
