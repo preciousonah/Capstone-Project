@@ -1,13 +1,5 @@
 const Parse = require("parse/node");
 
-const APP_ID = "yS7mzf9F0VFtrumR3wVbkY6wNTM3zFbMf4H7s4HP";
-const JS_KEY = "lyK93mhzenGxQh58QPrx9vvXoJ1FLk9AMmGaCJHL";
-const MASTER_KEY = "Sh5jO61tl94TLrWLPm8RBvk1T7l3fHOBLJXTv4LT";
-
-// Initialize Parse
-Parse.initialize(`${APP_ID}`, `${JS_KEY}`, `${MASTER_KEY}`);
-Parse.serverURL = "https://parseapi.back4app.com/parse";
-
 class Users {
 	static async logIn(username, password) {
 		let user = await Parse.User.logIn(username, password);
