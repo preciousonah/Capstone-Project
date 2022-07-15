@@ -1,5 +1,6 @@
 const Parse = require("parse/node");
 
+
 class Users {
 	static async logIn(username, password) {
 		let user = await Parse.User.logIn(username, password);

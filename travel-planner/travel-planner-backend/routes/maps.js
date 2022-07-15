@@ -47,18 +47,9 @@ router.post("/getUserMaps", async (req, res) => {
 					console.log("Confused? ", error);
 				});
 		} else {
-			// throw "ERROR: Invalid session token!";
-			res.status(400).send({ message: "ERROR: Invalid session token!" });
+			res.status(400).send({ message: "ERROR: Invalid session token!" })
 		}
 	});
-
-	// try {
-	// 	const results = await mapsModel.getUserMaps(req.body.sessionToken);
-	// 	console.log("Outside results:", results);
-	// 	res.status(200).send(results);
-	// } catch (error) {
-	// 	res.status(400).send({ typeStatus: "danger", message: error });
-	// }
 });
 
 router.post("/getAddress", async (req, res) => {
