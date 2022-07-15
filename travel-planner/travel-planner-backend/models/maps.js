@@ -29,11 +29,31 @@ class Maps {
 		map.set("Timeline", new Timelines());
 
 		map.save().then((newMap) => {
-			console.log("Created map with id: ", newMap.id);
+			return(newMap)
 		});
 	}
 
-	static async getUserMaps(sessionToken) {}
+  static async getUserMaps(sessionToken) {
+    let query = new Parse.Query("_Session");
+		query.equalTo("sessionToken", sessionToken);
+		query.first().then(function (session) {
+			if (session) {
+        const user = session.get("user");
+
+        query = new Parse.Query("Maps")
+        query.equalTo("User", user)
+        query.find().then(function (maps) {
+          console.log(maps)
+          return maps
+        }).catch((error) => {
+          console.log("Confused? ", error)
+        })
+
+			} else {
+				throw "ERROR: Invalid session token!";
+			}
+		});
+  }
 
 	static async getAddress(address) {
 		// Using this api: https://positionstack.com/
