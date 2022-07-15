@@ -1,6 +1,7 @@
 const morgan = require("morgan");
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config()
 const bodyParser = require("body-parser");
 
 const users = require("./routes/users");
@@ -24,7 +25,7 @@ app.post("/getAddress", async (req, res) => {
 
 	// Using this api: https://positionstack.com/
 
-	const API_KEY = "eef710e2f8eeb0f5fbe30931732d2185"
+	const API_KEY = process.env.PARSE_API_KEY
 	const url = `http://api.positionstack.com/v1/forward?access_key=${API_KEY}&query=${req.body.address}&limit=5&output=json`
 	// I can specify a region (this would already be provided if the user wants recommendations)
 
