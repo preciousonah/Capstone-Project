@@ -1,13 +1,46 @@
 import "./Maps.css";
+import Marker from "../Marker/Marker";
+import { useEffect, useRef, useState } from "react";
 
-const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
+export default function Maps({ searchOnChange, searchTerm, setCurNote }) {
+	const ref = useRef(null);
+	const [map, setMap] = useState();
 
-export default function Maps({ searchOnChange, searchTerm }) {
-	/* This will need to be moved to the backend for security reasons!! */
-	// for more map modes, see: https://developers.google.com/maps/documentation/embed/embedding-map#choosing_map_modes
-	const MAP_MODE = "place"; // directions is also an option!!
-	// this can be the address or specific location name
-	const PARAMETERS = "q=San+Francisco,California"; //&center=latitude,logitude
+	const mapInit = () => {
+		useEffect(() => {
+			console.log("Map rerendered!");
+			if (ref.current && !map) {
+				setMap(
+					new window.google.maps.Map(ref.current, {
+						center: { lat: 30, lng: 0 }, // position by default (shows the center of the map)
+						zoom: 3,
+					})
+				);
+			}
+		}, [ref, map]);
+
+		const image =
+			"https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"; // test image of a flag so we can see where the pin is!
+
+		// map.addListener("click", (event) => {
+		// 	map.panTo(event.latLng)
+		// })
+
+		return (
+			<div
+				id="displayed-map"
+				ref={ref}
+				style={{ flexGrow: "1", height: "100%" }}
+			>
+				<Marker
+					position={{ lat: 37.499468, lng: -122.143871 }}
+					title="MPK Office"
+					icon={image}
+					map={map}
+				/>
+			</div>
+		);
+	};
 
 	return (
 		<div className="maps-container">
@@ -18,12 +51,8 @@ export default function Maps({ searchOnChange, searchTerm }) {
 					placeholder="Search"
 				></input>
 			</div>
-			<iframe
-				frameBorder="0"
-				referrerPolicy="no-referrer-when-downgrade"
-				src={`https://www.google.com/maps/embed/v1/${MAP_MODE}?key=${API_KEY}&${PARAMETERS}`}
-				className="embedded-map"
-			></iframe>
+
+			{mapInit()}
 		</div>
 	);
 }

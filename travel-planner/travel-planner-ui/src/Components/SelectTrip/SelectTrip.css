@@ -1,0 +1,91 @@
+/* .select-trip-page {
+  height: 100vh;
+} */
+
+.create-new-trip-form {
+	display: flex;
+	justify-content: center;
+}
+
+.create-new-trip-form form {
+	box-shadow: 0 6px 15px 0 rgb(85, 38, 0);
+	background-color: bisque;
+	position: absolute;
+	z-index: 10;
+	width: 86vw;
+	height: 60vh;
+	border-radius: 20px;
+	padding: 6vh 4vw;
+	margin-top: 3.6vh;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	flex-direction: column;
+}
+
+.create-new-trip-form input {
+	margin: 0.7vh 0px;
+	padding: 0.5vh 1.3vw;
+	width: 100%;
+	border-radius: 20px;
+	border: none;
+	height: 3vh;
+	text-overflow: clip;
+	letter-spacing: 0.2vh;
+	font-size: 1.6vh;
+	flex: 14;
+}
+
+.create-new-trip-form label {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.create-new-trip-form h3 {
+	margin-right: 2vw;
+	font-size: 1.6vh;
+	letter-spacing: 0.2vh;
+	flex: 1;
+}
+
+.create-new-trip-form button {
+	margin-bottom: 4vh;
+
+	text-overflow: clip;
+	font-size: 2vh;
+	letter-spacing: 0.5vw;
+	margin-top: 3vh;
+	border-radius: 20px;
+	width: 54%;
+	font-weight: bold;
+	color: white;
+	cursor: pointer;
+	height: 5vh;
+	border: none;
+	background-size: 300% 100%;
+
+	-o-transition: all 0.7s ease-in-out;
+	-webkit-transition: all 0.7s ease-in-out;
+	transition: all 0.7s ease-in-out;
+
+	background-image: linear-gradient(
+		to right,
+		rgb(255, 249, 168),
+		rgb(223, 168, 120),
+		rgb(223, 168, 120),
+		rgb(255, 219, 122)
+	);
+	box-shadow: 0 4px 15px 0 rgba(85, 38, 0, 0.459);
+}
+
+.create-new-trip-form button:hover {
+  background-position: 100% 0;
+	-o-transition: all 0.7s ease-in-out;
+	-webkit-transition: all 0.7s ease-in-out;
+	transition: all 0.7s ease-in-out;
+}
+
+.create-new-trip-form div{
+	width: 100%;
+}
