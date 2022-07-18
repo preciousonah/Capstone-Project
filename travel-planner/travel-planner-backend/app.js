@@ -1,9 +1,10 @@
 const morgan = require("morgan");
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 const bodyParser = require("body-parser");
 const Parse = require("parse/node");
+
+require("dotenv").config();
 
 const APP_ID = process.env.PARSE_APP_ID;
 const JS_KEY = process.env.PARSE_JS_KEY;
@@ -13,7 +14,7 @@ const MASTER_KEY = process.env.PARSE_MASTER_KEY;
 Parse.initialize(`${APP_ID}`, `${JS_KEY}`, `${MASTER_KEY}`);
 Parse.serverURL = "https://parseapi.back4app.com/parse";
 
-Parse.Cloud.useMasterKey()
+Parse.Cloud.useMasterKey();
 
 const users = require("./routes/users");
 const notes = require("./routes/notes");
