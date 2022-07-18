@@ -4,6 +4,17 @@
 
 When planning a trip to a new (or old) place, we're often using multiple pages, apps, and websites to find the most popular places to visit, the order to visit each one, and what to do at each location. This website woll provide a central location for all trip planning. It will include a map where you can pin any places you want, recommend the best method of transportation for those, let you link locations, create to-do lists, find information on the city, and more.
 
+## Usage
+
+You will need api keys from Parse, Google Maps, and Position Stack. Please message @KimberlyTruong privately for these keys.
+
+**Steps:**
+1. Clone this repo.
+2. Run ```npm install``` in travel-planner-ui AND travel-planner-backend.
+3. Copy the API keys to .env files in travel-planner-ui and travel-planner-backend respectively.
+4. Type ```npm run dev``` in both travel-planner-ui AND travel-planner-backend.
+5. Feel free to user username: ```testing``` and password: ```testing101``` or create your own account.
+
 ## User Stories
 
 **User role:** Planner
