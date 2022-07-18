@@ -52,7 +52,7 @@ class Maps {
 						console.log("Confused? ", error);
 					});
 			} else {
-				throw "ERROR: Invalid session token!";
+				throw "ERROR: Invalid session token when get user maps!";
 			}
 		});
 	}
