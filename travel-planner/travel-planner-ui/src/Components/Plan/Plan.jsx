@@ -3,8 +3,6 @@ import Notes from "../Notes/Notes";
 import Maps from "../Maps/Maps";
 import SelectTripPage from "../SelectTrip/SelectTrip";
 
-import { UserContext } from "../../UserContext";
-
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 
@@ -15,16 +13,8 @@ const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
 export default function Plan(props) {
 	const [tripDetails, setTripDetails] = useState(null);
 
-	const { sessionToken, signUpUser, logInUser, logOutUser } =
-		useContext(UserContext);
-
 	const [curNote, setCurNote] = useState({ title: "Note", text: "" });
 	const [isOpen, setIsOpen] = useState(false);
-	const [searchTerm, setSearchTerm] = useState("");
-
-	const updateMapsSearchChange = (value) => {
-		setSearchTerm(value);
-	};
 
 	const updateNoteChange = () => {
 		const noteTitleInputElement = document.getElementById("note-title-input");
@@ -70,18 +60,6 @@ export default function Plan(props) {
 		return <h1>Not working</h1>;
 	};
 
-	useEffect(async () => {
-		if (tripDetails) {
-			const res = await axios.post(
-				`http://localhost:${props.PORT}/maps/getMarkers`,
-				{
-					mapId: tripDetails,
-				}
-			);
-			console.log(res);
-		}
-	}, [tripDetails]);
-
 	return (
 		<>
 			{!tripDetails ? (
@@ -92,10 +70,9 @@ export default function Plan(props) {
 						<Wrapper apiKey={API_KEY} render={render}>
 							<div id="map">
 								<Maps
-									searchOnChange={updateMapsSearchChange}
-									searchTerm={searchTerm}
 									setCurNote={setCurNote}
 									trip={tripDetails}
+									PORT={props.PORT}
 								/>
 							</div>
 						</Wrapper>

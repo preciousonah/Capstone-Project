@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
 
-const axios = require('axios')
+const axios = require("axios");
 
 router.post("/newMap", async (req, res) => {
 	try {
@@ -84,6 +84,7 @@ router.post("/getUserMaps", async (req, res) => {
 router.post("/createNewMarker", async (req, res) => {
 	const mapId = req.body.mapId; // Maps object
 	const location = req.body.location; // {lat: , lng:}
+	const address = req.body.address;
 
 	// or call get address here!
 
@@ -102,10 +103,11 @@ router.post("/createNewMarker", async (req, res) => {
 			"Location",
 			new Parse.GeoPoint({ latitude: location.lat, longitude: location.lng })
 		);
+		marker.set("Address", address);
 
 		marker.save().then((newMarker) => {
 			// return the created marker so it can be added to the map
-			res.status(200).send(newMarker);
+			res.status(200).send({ marker: newMarker });
 		});
 	} catch (error) {
 		res.status(400).send({ message: error });
@@ -142,16 +144,23 @@ router.post("/getAddress", async (req, res) => {
 		access_key: API_KEY,
 		query: req.body.address,
 		limit: 1,
-		output: 'json'
-	}
+		output: "json",
+	};
 
-	axios.get('http://api.positionstack.com/v1/forward', { params })
-		.then(response => {
-			res.status(200).json(response.data.data[0])
+	axios
+		.get("http://api.positionstack.com/v1/forward", { params })
+		.then((response) => {
+			const results = response.data.data[0];
+			res
+				.status(200)
+				.send({
+					address: results.label,
+					coordinates: { lat: results.latitude, lng: results.longitude },
+				});
 		})
-		.catch ((error) => {
-			res.status(500).json({message: error})
-		})
+		.catch((error) => {
+			res.status(500).send({ message: error });
+		});
 });
 
 module.exports = router;
