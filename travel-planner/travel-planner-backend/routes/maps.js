@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const got = require("got");
-const { pipeline } = require("stream");
-const mapsModel = require("./../models/maps");
+// const mapsModel = require("./../models/maps");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
+
+const axios = require('axios')
 
 router.post("/newMap", async (req, res) => {
 	try {
@@ -132,34 +132,26 @@ router.post("/getMarkers", async (req, res) => {
 });
 
 router.post("/getAddress", async (req, res) => {
-	// Fix this, it's broken !!!
+	// For some reason the model is not working...
 
 	// Using this api: https://positionstack.com/
 
 	const API_KEY = process.env.POSITION_STACK_API_KEY;
-	const url = `http://api.positionstack.com/v1/forward?access_key=${API_KEY}&query=${req.body.address}&limit=1&output=json`;
-	// I can specify a region (this would already be provided if the user wants recommendations)
 
-	// need to connect the user's search bar from the front end here.
-	// need to create a submit button so the user can submit the full address.
+	const params = {
+		access_key: API_KEY,
+		query: req.body.address,
+		limit: 1,
+		output: 'json'
+	}
 
-	// STRETCH: can we confirm the user typed in a valid address first before doing anything?
-	// Potentially with this api: https://www.smarty.com/products/apis/international-street-api
-
-	const dataStream = got.stream({
-		url: url,
-	});
-	pipeline(dataStream, res, (err) => {
-		if (err) {
-			console.log(err);
-			res.status(500).send({
-				data: dataStream,
-			});
-		}
-		res.status(200).send({
-			data: dataStream,
-		});
-	});
+	axios.get('http://api.positionstack.com/v1/forward', { params })
+		.then(response => {
+			res.status(200).json(response.data.data[0])
+		})
+		.catch ((error) => {
+			res.status(500).json({message: error})
+		})
 });
 
 module.exports = router;
