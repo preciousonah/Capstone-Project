@@ -135,35 +135,18 @@ router.post("/getMarkers", async (req, res) => {
 	}
 });
 
-router.post("/updateName", async (req, res) => {
+router.post("/updateNote", async (req, res) => {
 	// Update the name of the map marker
 
 	try {
 		const markerId = req.body.markerId;
 		const newName = req.body.name;
+		const newContent = req.body.content
 
 		const Markers = Parse.Object.extend("Markers");
 		const marker = new Markers().set("objectId", markerId);
 
 		marker.set("Name", newName);
-		marker.save().then((updatedMarker) => {
-			res.status(200).send({ marker: updatedMarker });
-		});
-	} catch (error) {
-		res.status(400).send({ message: error });
-	}
-});
-
-router.post("/updateContent", async (req, res) => {
-	// update content of the map marker's note
-
-	try {
-		const markerId = req.body.markerId;
-		const newContent = req.body.content;
-
-		const Markers = Parse.Object.extend("Markers");
-		const marker = new Markers().set("objectId", markerId);
-
 		marker.set("Content", newContent);
 		marker.save().then((updatedMarker) => {
 			res.status(200).send({ marker: updatedMarker });

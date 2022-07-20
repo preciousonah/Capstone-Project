@@ -13,47 +13,11 @@ const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
 export default function Plan(props) {
 	const [tripDetails, setTripDetails] = useState(null);
 
-	const [curNote, setCurNote] = useState({ title: "Note", text: "" });
-	const [isOpen, setIsOpen] = useState(false);
-
-	const updateNoteChange = () => {
-		const noteTitleInputElement = document.getElementById("note-title-input");
-		const noteInputElement = document.getElementById("note-input");
-
-		setCurNote({
-			title: noteTitleInputElement.value,
-			text: noteInputElement.value,
-		});
-	};
-
-	const openNote = () => {
-		/* The user can open a dropdown of notes titles. Sorted by data created. */
-		/* The user can click on the title they want to open, then it will open */
-	};
-
-	const closeNote = () => {
-		/* Users can close notes by clicking the x button on the top right of the note */
-		/* The user should be able to minimze notes as well */
-		/* Confirm with the user if they want to save the note or not upon close */
-	};
-
-	const handleSaveNoteOnClick = (event) => {
-		event.preventDefault();
-
-		if (isOpen) {
-			axios.post(`http://localhost:${props.PORT}/notes/update`, {
-				note: curNote,
-			});
-		} else {
-			axios.post(`http://localhost:${props.PORT}/notes/save`, {
-				note: curNote,
-			}); // error handling?
-		}
-
-		setCurNote({ title: "Note", text: "" });
-
-		setIsOpen(false);
-	};
+	const [curNote, setCurNote] = useState({
+		title: "Note",
+		text: "",
+		markerId: null,
+	});
 
 	const render = () => {
 		console.log("Not working/loading rendering?");
@@ -73,17 +37,14 @@ export default function Plan(props) {
 									setCurNote={setCurNote}
 									trip={tripDetails}
 									PORT={props.PORT}
+									setCurNote={setCurNote}
 								/>
 							</div>
 						</Wrapper>
 					</div>
 					<div className="right-app">
 						<h1 className="map-title">{tripDetails.MapName}</h1>
-						<Notes
-							notesText={curNote}
-							updateNoteChange={updateNoteChange}
-							handleSaveOnClick={handleSaveNoteOnClick}
-						/>
+						<Notes curNote={curNote} PORT={props.PORT} />
 					</div>
 				</div>
 			)}

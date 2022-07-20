@@ -12,6 +12,7 @@ export default function Content({
 	address,
 	noteContent,
 	PORT,
+	setCurNote,
 }) {
 	// Create the content displayed when user opens the infoWindow
 
@@ -19,16 +20,10 @@ export default function Content({
 	const [curTitle, setCurTitle] = useState(title);
 	const [curContent, setCurContent] = useState(noteContent ? noteContent : "");
 
-	const updateTitle = async () => {
-		await axios.post(`http://localhost:${PORT}/maps/updateName`, {
+	const updateNote = async () => {
+		await axios.post(`http://localhost:${PORT}/maps/updateNote`, {
 			markerId: markerId,
 			name: curTitle,
-		});
-	};
-
-	const updateContent = async () => {
-		await axios.post(`http://localhost:${PORT}/maps/updateContent`, {
-			markerId: markerId,
 			content: curContent,
 		});
 	};
@@ -41,7 +36,7 @@ export default function Content({
 						className="info-window-title"
 						onKeyDown={(event) => {
 							if (event.key === "Enter") {
-								updateTitle();
+								updateNote();
 								setAdjustTitle(false);
 							}
 						}}
@@ -73,13 +68,22 @@ export default function Content({
 				onChange={(event) => setCurContent(event.currentTarget.value)}
 				onKeyDown={(event) => {
 					if (event.key === "Enter") {
-						updateContent();
+						updateNote();
 					}
 				}}
 				type="text"
 			/>
 			<div className="expand-note-button">
-				<i className="fa-solid fa-maximize"></i>
+				<i
+					onClick={() => {
+						setCurNote({
+							title: curTitle,
+							text: curContent,
+							markerId: markerId,
+						});
+					}}
+					className="fa-solid fa-maximize"
+				></i>
 			</div>
 		</div>
 	);

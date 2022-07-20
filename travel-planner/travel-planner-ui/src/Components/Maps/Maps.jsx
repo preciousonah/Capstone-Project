@@ -68,6 +68,7 @@ export default function Maps({ setCurNote, trip, PORT }) {
 							address={marker.Address}
 							content={marker.Content}
 							PORT={PORT}
+							setCurNote={setCurNote}
 						/>
 					))}
 			</div>

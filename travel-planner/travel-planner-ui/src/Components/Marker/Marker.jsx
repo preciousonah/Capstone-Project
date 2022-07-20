@@ -19,6 +19,7 @@ export default function Marker(props) {
 					address={props.address}
 					noteContent={props.content}
 					PORT={props.PORT}
+					setCurNote={props.setCurNote}
 				/>
 			);
 
