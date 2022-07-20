@@ -1,24 +1,36 @@
 import "./SelectTrip.css";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { UserContext } from "../../UserContext";
 
 import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
+
+import Loading from "../Loading/Loading";
 
 function CreateNewTrip(props) {
 	const [newTripTitle, setNewTripTitle] = useState(props.tripTitle);
 	const [newTripCenter, setNewTripCenter] = useState("");
 
-	console.log("CreateNewTrip called");
+	const submitNewTrip = async (event) => {
+		event.preventDefault();
+
+		// Create a new trip
+		// Then send that newly create trip back to Plans through setFinalTripDetails
+
+		const res = await axios.post(`http://localhost:${props.PORT}/maps/newMap`, {
+			title: newTripTitle,
+			center: newTripCenter,
+			sessionToken: props.sessionToken,
+		});
+		console.log("new trip response: ", res);
+		props.setFinalTripDetails(res.data);
+	};
 
 	return (
 		<div className="create-new-trip-form">
-			<form
-				onSubmit={(event) => {
-					event.preventDefault();
-					props.setFinalTripDetails({title: newTripTitle, center: newTripCenter});
-				}}
-			>
+			<form onSubmit={submitNewTrip}>
 				<h1>Create a new trip!</h1>
 				<div>
 					<label>
@@ -50,9 +62,22 @@ function CreateNewTrip(props) {
 }
 
 export default function SelectTripPage(props) {
-	const [creatingTrip, setCreatingTrip] = useState("");
+	const { sessionToken } = useContext(UserContext);
 
-	console.log("Called SelectTripPage");
+	const [creatingTrip, setCreatingTrip] = useState("");
+	const [trips, setTrips] = useState(null); // An array containing Map objects for the user
+
+	// Get the existing trips by querying
+	useEffect(async () => {
+		const res = await axios.post(
+			`http://localhost:${props.PORT}/maps/getUserMaps`,
+			{
+				sessionToken: sessionToken,
+			}
+		);
+
+		setTrips(res.data);
+	}, []);
 
 	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		<a
@@ -105,6 +130,21 @@ export default function SelectTripPage(props) {
 		}
 	);
 
+	const onClickTripName = (event) => {
+		const tripId = event.currentTarget.getAttribute("data-objectid");
+
+		trips.forEach((trip) => {
+			if (trip.objectId === tripId) {
+				console.log("Set new trip by selection!");
+				props.setTripDetails(trip);
+			}
+		});
+	};
+
+	if (!trips) {
+		return <Loading />;
+	}
+
 	return (
 		<div className="select-trip-page">
 			<Dropdown>
@@ -113,17 +153,23 @@ export default function SelectTripPage(props) {
 				</Dropdown.Toggle>
 
 				<Dropdown.Menu as={CustomMenu}>
-					<Dropdown.Item eventKey="1">Red</Dropdown.Item>
-					<Dropdown.Item eventKey="2">Blue</Dropdown.Item>
-					<Dropdown.Item eventKey="3" active>
-						Orange
-					</Dropdown.Item>
+					{trips.map((trip) => (
+						<Dropdown.Item
+							key={trip.objectId}
+							data-objectid={trip.objectId}
+							onClick={onClickTripName}
+						>
+							{trip.MapName}
+						</Dropdown.Item>
+					))}
 				</Dropdown.Menu>
 			</Dropdown>
 			{creatingTrip != "" && (
 				<CreateNewTrip
 					tripTitle={creatingTrip}
 					setFinalTripDetails={props.setTripDetails}
+					PORT={props.PORT}
+					sessionToken={sessionToken}
 				/>
 			)}
 		</div>

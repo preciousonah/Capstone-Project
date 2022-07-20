@@ -13,16 +13,7 @@ import { Wrapper, Status } from "@googlemaps/react-wrapper";
 const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
 
 export default function Plan(props) {
-	const [tripDetails, setTripDetails] = useState({ title: "", center: "" });
-
-	useEffect(async () => {
-		axios.post(`http://localhost:${props.PORT}/maps/newMap`, {
-			title: tripDetails.title,
-			center: tripDetails.center,
-		});
-
-		console.log(tripDetails);
-	}, [tripDetails]);
+	const [tripDetails, setTripDetails] = useState(null);
 
 	const { sessionToken, signUpUser, logInUser, logOutUser } =
 		useContext(UserContext);
@@ -79,16 +70,24 @@ export default function Plan(props) {
 		return <h1>Not working</h1>;
 	};
 
-	// console.log(tripDetails)
+	useEffect(async () => {
+		if (tripDetails) {
+			const res = await axios.post(
+				`http://localhost:${props.PORT}/maps/getMarkers`,
+				{
+					mapId: tripDetails,
+				}
+			);
+			console.log(res);
+		}
+	}, [tripDetails]);
 
 	return (
 		<>
-			{tripDetails.title === "" ? (
-				<SelectTripPage setTripDetails={setTripDetails} />
+			{!tripDetails ? (
+				<SelectTripPage setTripDetails={setTripDetails} PORT={props.PORT} />
 			) : (
 				<div className="plan-page main-page">
-					<h1>{tripDetails.title} </h1>
-					<h1>{tripDetails.center}</h1>
 					<div className="left-app">
 						<Wrapper apiKey={API_KEY} render={render}>
 							<div id="map">
@@ -96,6 +95,7 @@ export default function Plan(props) {
 									searchOnChange={updateMapsSearchChange}
 									searchTerm={searchTerm}
 									setCurNote={setCurNote}
+									trip={tripDetails}
 								/>
 							</div>
 						</Wrapper>
