@@ -30,7 +30,12 @@ router.post("/newMap", async (req, res) => {
 		query.first().then(function (session) {
 			if (session) {
 				const user = session.get("user"); // sometimes I get an error... ParseError: User is required. Don't know what's causing this though...
-				map.set("User", user);
+				if (user) {
+					map.set("User", user);
+				}
+				else {
+					res.status(400).send({message: "ERROR: no user found."})
+				}
 			} else {
 				res.status(400).send({
 					typeStatus: "danger",
@@ -41,7 +46,6 @@ router.post("/newMap", async (req, res) => {
 
 		map.set("MapName", title);
 		map.set("Center", new Parse.GeoPoint({ latitude: lat, longitude: lng }));
-
 		map.set("Timeline", new Timelines());
 
 		map.save().then((newMap) => {
@@ -118,7 +122,6 @@ router.post("/createNewMarker", async (req, res) => {
 
 router.post("/getMarkers", async (req, res) => {
 	// get the marker array from the map
-
 	try {
 		const mapId = req.body.mapId;
 
@@ -137,11 +140,10 @@ router.post("/getMarkers", async (req, res) => {
 
 router.post("/updateNote", async (req, res) => {
 	// Update the name of the map marker
-
 	try {
 		const markerId = req.body.markerId;
 		const newName = req.body.name;
-		const newContent = req.body.content
+		const newContent = req.body.content;
 
 		const Markers = Parse.Object.extend("Markers");
 		const marker = new Markers().set("objectId", markerId);
