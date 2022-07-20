@@ -78,6 +78,7 @@ export default function Plan(props) {
 						</Wrapper>
 					</div>
 					<div className="right-app">
+						<h1 className="map-title">{tripDetails.MapName}</h1>
 						<Notes
 							notesText={curNote}
 							updateNoteChange={updateNoteChange}

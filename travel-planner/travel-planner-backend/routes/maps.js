@@ -7,6 +7,8 @@ const Parse = require("parse/node");
 
 const axios = require("axios");
 
+// create delete pin endpoint?
+
 router.post("/newMap", async (req, res) => {
 	try {
 		let title = req.body.title;
@@ -133,6 +135,44 @@ router.post("/getMarkers", async (req, res) => {
 	}
 });
 
+router.post("/updateName", async (req, res) => {
+	// Update the name of the map marker
+
+	try {
+		const markerId = req.body.markerId;
+		const newName = req.body.name;
+
+		const Markers = Parse.Object.extend("Markers");
+		const marker = new Markers().set("objectId", markerId);
+
+		marker.set("Name", newName);
+		marker.save().then((updatedMarker) => {
+			res.status(200).send({ marker: updatedMarker });
+		});
+	} catch (error) {
+		res.status(400).send({ message: error });
+	}
+});
+
+router.post("/updateContent", async (req, res) => {
+	// update content of the map marker's note
+
+	try {
+		const markerId = req.body.markerId;
+		const newContent = req.body.content;
+
+		const Markers = Parse.Object.extend("Markers");
+		const marker = new Markers().set("objectId", markerId);
+
+		marker.set("Content", newContent);
+		marker.save().then((updatedMarker) => {
+			res.status(200).send({ marker: updatedMarker });
+		});
+	} catch (error) {
+		res.status(400).send({ message: error });
+	}
+});
+
 router.post("/getAddress", async (req, res) => {
 	// For some reason the model is not working...
 
@@ -151,12 +191,10 @@ router.post("/getAddress", async (req, res) => {
 		.get("http://api.positionstack.com/v1/forward", { params })
 		.then((response) => {
 			const results = response.data.data[0];
-			res
-				.status(200)
-				.send({
-					address: results.label,
-					coordinates: { lat: results.latitude, lng: results.longitude },
-				});
+			res.status(200).send({
+				address: results.label,
+				coordinates: { lat: results.latitude, lng: results.longitude },
+			});
 		})
 		.catch((error) => {
 			res.status(500).send({ message: error });

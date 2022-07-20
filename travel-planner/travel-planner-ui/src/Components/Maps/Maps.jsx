@@ -18,6 +18,7 @@ export default function Maps({ setCurNote, trip, PORT }) {
 					new window.google.maps.Map(ref.current, {
 						center: { lat: trip.Center.latitude, lng: trip.Center.longitude }, // position by default (shows the center of the map) 30, 0
 						zoom: 3,
+						disableDoubleClickZoom: true,
 					})
 				);
 			}
@@ -63,6 +64,10 @@ export default function Maps({ setCurNote, trip, PORT }) {
 							icon={image}
 							map={map}
 							key={marker.objectId}
+							objectId={marker.objectId}
+							address={marker.Address}
+							content={marker.Content}
+							PORT={PORT}
 						/>
 					))}
 			</div>
