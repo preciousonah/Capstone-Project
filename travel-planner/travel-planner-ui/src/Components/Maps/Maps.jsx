@@ -1,19 +1,21 @@
 import "./Maps.css";
 import Marker from "../Marker/Marker";
-import Loading from "../Loading/Loading";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 export default function Maps({
-	searchOnChange,
-	searchTerm,
 	setCurNote,
 	trip,
 	PORT,
+	directionsMode,
+	directionMarkers,
+	setDirectionMarkers,
 }) {
 	const ref = useRef(null);
 	const [map, setMap] = useState();
 	const [markers, setMarkers] = useState(null);
+	const [address, setAddress] = useState("");
+	const [update, setUpdate] = useState(false);
 
 	const mapInit = () => {
 		useEffect(() => {
@@ -21,8 +23,9 @@ export default function Maps({
 			if (ref.current && !map) {
 				setMap(
 					new window.google.maps.Map(ref.current, {
-						center: { lat: trip.Center.latitude, lng: trip.Center.longitude },
+						center: { lat: trip.Center.latitude, lng: trip.Center.longitude }, // position by default (shows the center of the map) 30, 0
 						zoom: 3,
+						disableDoubleClickZoom: true,
 					})
 				);
 			}
@@ -37,15 +40,19 @@ export default function Maps({
 
 		// get the markers
 		useEffect(async () => {
-			const res = await axios.post(`http://localhost:${PORT}/maps/getMarkers`, {
-				mapId: trip,
-			});
-			setMarkers(res.data);
-		}, []);
-
-		if (!markers) {
-			return <Loading />;
-		}
+			try {
+				const res = await axios.post(
+					`http://localhost:${PORT}/maps/getMarkers`,
+					{
+						mapId: trip.objectId,
+					}
+				);
+				setMarkers(res.data.markers);
+				setUpdate(false);
+			} catch (error) {
+				console.log("Error fetching markers in UI: ", error);
+			}
+		}, [update]);
 
 		return (
 			<div
@@ -53,28 +60,74 @@ export default function Maps({
 				ref={ref}
 				style={{ flexGrow: "1", height: "100%" }}
 			>
-				{markers.map((marker) => (
-					<Marker
-						position={{
-							lat: marker.Location.latitude,
-							lng: marker.Location.longitude,
-						}}
-						title={marker.Name}
-						icon={image}
-						map={map}
-						key={marker.objectId}
-					/>
-				))}
+				{markers &&
+					markers.map((marker) => (
+						<Marker
+							position={{
+								lat: marker.Location.latitude,
+								lng: marker.Location.longitude,
+							}}
+							title={marker.Name}
+							icon={image}
+							map={map}
+							key={marker.objectId}
+							objectId={marker.objectId}
+							address={marker.Address}
+							content={marker.Content}
+							PORT={PORT}
+							setCurNote={setCurNote}
+							directionsMode={directionsMode}
+							directionMarkers={directionMarkers}
+							setDirectionMarkers={setDirectionMarkers}
+						/>
+					))}
 			</div>
 		);
+	};
+
+	const addNewMarker = async () => {
+		// we really will need to get error checking
+
+		// 1. reformat address so it can be passed to the api
+		// Don't think this api needs it
+		// 2. user axios post request address: address
+		// Can we combine this into one post request please?
+		const addressRes = await axios.post(
+			`http://localhost:${PORT}/maps/getAddress`,
+			{
+				address: address,
+			}
+		);
+		const location = addressRes.data.coordinates;
+		const reformattedAddress = addressRes.data.address;
+
+		// 3. call addMarker
+		await axios.post(
+			`http://localhost:${PORT}/maps/createNewMarker`,
+			{
+				mapId: trip.objectId,
+				location: location,
+				address: reformattedAddress,
+			}
+		);
+		// 4. update setMarker
+		// 5. marker should be added to the map without rerendering
+		setUpdate(true);
+
+		return null;
 	};
 
 	return (
 		<div className="maps-container">
 			<div className="maps-search">
 				<input
-					onChange={(event) => searchOnChange(event.target.value)}
-					value={searchTerm}
+					onChange={(event) => setAddress(event.target.value)}
+					onKeyDown={(event) => {
+						if (event.key === "Enter") {
+							addNewMarker();
+						}
+					}}
+					value={address}
 					placeholder="Search"
 				></input>
 			</div>

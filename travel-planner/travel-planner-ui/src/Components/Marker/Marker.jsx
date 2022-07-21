@@ -1,49 +1,26 @@
-import { useState, useEffect } from 'react'
-import {render} from 'react-dom'
+import "./Marker.css";
+import { useEffect } from "react";
+import { render } from "react-dom";
+import Content from "./Content";
 
 export default function Marker(props) {
 	class InfoWindow extends google.maps.OverlayView {
-		constructor(position, adjustTitle, setAdjustTitle, curTitle, setCurTitle) {
+		constructor(position) {
 			super();
 
 			this.position = position;
 			this.new = true;
 
-			// Create the content displayed when user opens the infoWindow
 			const content = (
-				<div className="info-window-content popup-bubble" id={`${curTitle}`}>
-					<div className="info-window-top-container">
-						{adjustTitle ? (
-							<input
-								className="info-window-title"
-								onKeyDown={(event) => {
-									if (event.key === "Enter") {
-										setAdjustTitle(false);
-									}
-								}}
-								onChange={(event) => setCurTitle(event.currentTarget.value)}
-								value={curTitle}
-							/>
-						) : (
-							<h2
-								onDoubleClick={() => setAdjustTitle(true)}
-								className="info-window-title"
-							>
-								{curTitle}
-							</h2>
-						)}
-						<button
-							onClick={() => this.onRemove(this)}
-							className="close-info-window-button"
-						>
-							x
-						</button>
-					</div>
-					<p>Address: from search term or inverse geocode?</p>
-					<div className="info-window-note">
-						<button> Open Note </button>
-					</div>
-				</div>
+				<Content
+					infoWindow={this}
+					markerId={props.objectId}
+					title={props.title}
+					address={props.address}
+					noteContent={props.content}
+					PORT={props.PORT}
+					setCurNote={props.setCurNote}
+				/>
 			);
 
 			// Create the little arrow beneath the content.
@@ -98,19 +75,10 @@ export default function Marker(props) {
 		}
 	}
 
-	const [adjustTitle, setAdjustTitle] = useState(false);
-	const [curTitle, setCurTitle] = useState(props.title);
-
 	useEffect(() => {
 		const marker = new google.maps.Marker(props);
 
-		const popup = new InfoWindow(
-			props.position,
-			adjustTitle,
-			setAdjustTitle,
-			curTitle,
-			setCurTitle
-		);
+		const popup = new InfoWindow(props.position);
 		popup.setMap(props.map);
 		popup.onRemove();
 
@@ -121,7 +89,7 @@ export default function Marker(props) {
 		return () => {
 			marker.setMap(null);
 		};
-	}, [props]);
+	}, []);
 
 	return null;
 }

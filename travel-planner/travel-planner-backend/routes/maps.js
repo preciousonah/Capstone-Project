@@ -4,8 +4,9 @@ const bodyParser = require("body-parser");
 // const mapsModel = require("./../models/maps");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
+const axios = require("axios");
 
-const axios = require('axios')
+// create delete pin endpoint?
 
 router.post("/newMap", async (req, res) => {
 	try {
@@ -28,7 +29,12 @@ router.post("/newMap", async (req, res) => {
 		query.first().then(function (session) {
 			if (session) {
 				const user = session.get("user"); // sometimes I get an error... ParseError: User is required. Don't know what's causing this though...
-				map.set("User", user);
+				if (user) {
+					map.set("User", user);
+				}
+				else {
+					res.status(400).send({message: "ERROR: no user found."})
+				}
 			} else {
 				res.status(400).send({
 					typeStatus: "danger",
@@ -39,7 +45,6 @@ router.post("/newMap", async (req, res) => {
 
 		map.set("MapName", title);
 		map.set("Center", new Parse.GeoPoint({ latitude: lat, longitude: lng }));
-
 		map.set("Timeline", new Timelines());
 
 		map.save().then((newMap) => {
@@ -84,6 +89,7 @@ router.post("/getUserMaps", async (req, res) => {
 router.post("/createNewMarker", async (req, res) => {
 	const mapId = req.body.mapId; // Maps object
 	const location = req.body.location; // {lat: , lng:}
+	const address = req.body.address;
 
 	// or call get address here!
 
@@ -102,10 +108,11 @@ router.post("/createNewMarker", async (req, res) => {
 			"Location",
 			new Parse.GeoPoint({ latitude: location.lat, longitude: location.lng })
 		);
+		marker.set("Address", address);
 
 		marker.save().then((newMarker) => {
 			// return the created marker so it can be added to the map
-			res.status(200).send(newMarker);
+			res.status(200).send({ marker: newMarker });
 		});
 	} catch (error) {
 		res.status(400).send({ message: error });
@@ -114,7 +121,6 @@ router.post("/createNewMarker", async (req, res) => {
 
 router.post("/getMarkers", async (req, res) => {
 	// get the marker array from the map
-
 	try {
 		const mapId = req.body.mapId;
 
@@ -125,6 +131,26 @@ router.post("/getMarkers", async (req, res) => {
 		query.equalTo("Map", mapPointer);
 		query.find().then((markers) => {
 			res.status(200).send({ markers: markers });
+		});
+	} catch (error) {
+		res.status(400).send({ message: error });
+	}
+});
+
+router.post("/updateNote", async (req, res) => {
+	// Update the name and content of the map marker
+	try {
+		const markerId = req.body.markerId;
+		const newName = req.body.name;
+		const newContent = req.body.content;
+
+		const Markers = Parse.Object.extend("Markers");
+		const marker = new Markers().set("objectId", markerId);
+
+		marker.set("Name", newName);
+		marker.set("Content", newContent);
+		marker.save().then((updatedMarker) => {
+			res.status(200).send({ marker: updatedMarker });
 		});
 	} catch (error) {
 		res.status(400).send({ message: error });
@@ -142,16 +168,21 @@ router.post("/getAddress", async (req, res) => {
 		access_key: API_KEY,
 		query: req.body.address,
 		limit: 1,
-		output: 'json'
-	}
+		output: "json",
+	};
 
-	axios.get('http://api.positionstack.com/v1/forward', { params })
-		.then(response => {
-			res.status(200).json(response.data.data[0])
+	axios
+		.get("http://api.positionstack.com/v1/forward", { params })
+		.then((response) => {
+			const results = response.data.data[0];
+			res.status(200).send({
+				address: results.label,
+				coordinates: { lat: results.latitude, lng: results.longitude },
+			});
 		})
-		.catch ((error) => {
-			res.status(500).json({message: error})
-		})
+		.catch((error) => {
+			res.status(500).send({ message: error });
+		});
 });
 
 module.exports = router;
