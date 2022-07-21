@@ -13,7 +13,7 @@ export default function Marker(props) {
 
 			const content = (
 				<Content
-					obj={this}
+					infoWindow={this}
 					markerId={props.objectId}
 					title={props.title}
 					address={props.address}

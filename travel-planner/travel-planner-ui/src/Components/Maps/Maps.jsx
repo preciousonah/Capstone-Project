@@ -3,7 +3,14 @@ import Marker from "../Marker/Marker";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-export default function Maps({ setCurNote, trip, PORT }) {
+export default function Maps({
+	setCurNote,
+	trip,
+	PORT,
+	directionsMode,
+	directionMarkers,
+	setDirectionMarkers,
+}) {
 	const ref = useRef(null);
 	const [map, setMap] = useState();
 	const [markers, setMarkers] = useState(null);
@@ -43,7 +50,7 @@ export default function Maps({ setCurNote, trip, PORT }) {
 				setMarkers(res.data.markers);
 				setUpdate(false);
 			} catch (error) {
-				console.log("Error fetching markers: ", error);
+				console.log("Error fetching markers in UI: ", error);
 			}
 		}, [update]);
 
@@ -69,6 +76,9 @@ export default function Maps({ setCurNote, trip, PORT }) {
 							content={marker.Content}
 							PORT={PORT}
 							setCurNote={setCurNote}
+							directionsMode={directionsMode}
+							directionMarkers={directionMarkers}
+							setDirectionMarkers={setDirectionMarkers}
 						/>
 					))}
 			</div>
@@ -88,11 +98,11 @@ export default function Maps({ setCurNote, trip, PORT }) {
 				address: address,
 			}
 		);
-		const location = addressRes.data.coordinates; // lets reformat how I recieve this information
-		const reformattedAddress = addressRes.data.address; // these are both undefined
+		const location = addressRes.data.coordinates;
+		const reformattedAddress = addressRes.data.address;
 
 		// 3. call addMarker
-		const newMarkerRes = await axios.post(
+		await axios.post(
 			`http://localhost:${PORT}/maps/createNewMarker`,
 			{
 				mapId: trip.objectId,

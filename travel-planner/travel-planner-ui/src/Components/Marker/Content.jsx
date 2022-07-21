@@ -6,7 +6,7 @@ import axios from "axios";
 // allow us to edit note content and also expand note content on the right side.
 
 export default function Content({
-	obj,
+	infoWindow,
 	markerId,
 	title,
 	address,
@@ -54,7 +54,7 @@ export default function Content({
 				<button
 					onClick={() => {
 						setAdjustTitle(false);
-						obj.onRemove(obj);
+						infoWindow.onRemove(infoWindow);
 					}}
 					className="close-info-window-button"
 				>

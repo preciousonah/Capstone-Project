@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 // const mapsModel = require("./../models/maps");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
-
 const axios = require("axios");
 
 // create delete pin endpoint?
@@ -139,7 +138,7 @@ router.post("/getMarkers", async (req, res) => {
 });
 
 router.post("/updateNote", async (req, res) => {
-	// Update the name of the map marker
+	// Update the name and content of the map marker
 	try {
 		const markerId = req.body.markerId;
 		const newName = req.body.name;
