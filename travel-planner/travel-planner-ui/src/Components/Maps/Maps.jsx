@@ -34,9 +34,72 @@ export default function Maps({
 		const image =
 			"https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"; // test image of a flag so we can see where the pin is!
 
-		// map.addListener("click", (event) => {
-		// 	map.panTo(event.latLng)
-		// })
+		useEffect(() => {
+			if (map) {
+				let mapClickerListener = google.maps.event.addListener(
+					map,
+					"click",
+					(mapsMouseEvent) => {
+						// map.panTo(event.latLng)
+						console.log("Directions mode on maps click: ", directionsMode);
+
+						if (directionsMode) {
+							let postionCopy = directionMarkers;
+							postionCopy.push({
+								lat: mapsMouseEvent.latLng.lat(),
+								lng: mapsMouseEvent.latLng.lng(),
+							});
+							setDirectionMarkers(postionCopy);
+              console.log("Direction markers in useEffect: ", directionMarkers);
+
+              // This section displays the directions.
+              // Right now even when we reset the directions mode though... it doesn't reset.
+
+              // Is it really possible for me to move the directions to the backend and still render it??
+              // Let's pause on doing backend for now... I can make it more secure after all functionalities are completed
+
+              if (directionMarkers.length == 2) {
+                var directionsService = new google.maps.DirectionsService();
+                var directionsRenderer = new google.maps.DirectionsRenderer();
+
+                var request = {
+                  origin: directionMarkers[0],
+                  destination: directionMarkers[1],
+                  travelMode: 'DRIVING'
+                }
+
+                directionsService.route(request, (result, status) => {
+                  // send the request to get the directions
+                  console.log("Request: ", request)
+                  if (status === "OK") {
+                    console.log("Result: ", result)
+                    // Draw the directions on the map
+                    directionsRenderer.setDirections(result)
+                    // Now do the following:
+                      // 1. Send this to the backend to save in the database
+                      // 2. Save this in a state variable to display the html instructions, distance, and duration
+                      // 3. If distance < 3 miles... rerout with travelMode: 'WALKING' and then run the algorithm to see what's a better transportation option.
+                  }
+                })
+
+                directionsRenderer.setMap(map)
+
+                setDirectionMarkers([])
+              }
+							// this directionMarkers updates. But when you leave this useEffect. directionMarkers is empty again?
+						}
+					}
+				);
+
+				return () => {
+					google.maps.event.removeListener(mapClickerListener);
+				};
+			}
+		}, [directionsMode]);
+
+		useEffect(() => {
+			console.log("directionMarkers: ", directionMarkers);
+		}, [directionMarkers]);
 
 		// get the markers
 		useEffect(async () => {
@@ -102,14 +165,11 @@ export default function Maps({
 		const reformattedAddress = addressRes.data.address;
 
 		// 3. call addMarker
-		await axios.post(
-			`http://localhost:${PORT}/maps/createNewMarker`,
-			{
-				mapId: trip.objectId,
-				location: location,
-				address: reformattedAddress,
-			}
-		);
+		await axios.post(`http://localhost:${PORT}/maps/createNewMarker`, {
+			mapId: trip.objectId,
+			location: location,
+			address: reformattedAddress,
+		});
 		// 4. update setMarker
 		// 5. marker should be added to the map without rerendering
 		setUpdate(true);
