@@ -8,6 +8,7 @@ export default function Maps({
 	trip,
 	PORT,
 	directionsMode,
+	setDirectionsResults,
 	directionMarkers,
 	setDirectionMarkers,
 }) {
@@ -16,6 +17,9 @@ export default function Maps({
 	const [markers, setMarkers] = useState(null);
 	const [address, setAddress] = useState("");
 	const [update, setUpdate] = useState(false);
+	const [directionsRenderer, setDirectionsRenderer] = useState(
+		new google.maps.DirectionsRenderer()
+	);
 
 	const mapInit = () => {
 		useEffect(() => {
@@ -41,65 +45,30 @@ export default function Maps({
 					"click",
 					(mapsMouseEvent) => {
 						// map.panTo(event.latLng)
-						console.log("Directions mode on maps click: ", directionsMode);
 
 						if (directionsMode) {
-							let postionCopy = directionMarkers;
-							postionCopy.push({
-								lat: mapsMouseEvent.latLng.lat(),
-								lng: mapsMouseEvent.latLng.lng(),
-							});
-							setDirectionMarkers(postionCopy);
-              console.log("Direction markers in useEffect: ", directionMarkers);
-
-              // This section displays the directions.
-              // Right now even when we reset the directions mode though... it doesn't reset.
-
-              // Is it really possible for me to move the directions to the backend and still render it??
-              // Let's pause on doing backend for now... I can make it more secure after all functionalities are completed
-
-              if (directionMarkers.length == 2) {
-                var directionsService = new google.maps.DirectionsService();
-                var directionsRenderer = new google.maps.DirectionsRenderer();
-
-                var request = {
-                  origin: directionMarkers[0],
-                  destination: directionMarkers[1],
-                  travelMode: 'DRIVING'
-                }
-
-                directionsService.route(request, (result, status) => {
-                  // send the request to get the directions
-                  console.log("Request: ", request)
-                  if (status === "OK") {
-                    console.log("Result: ", result)
-                    // Draw the directions on the map
-                    directionsRenderer.setDirections(result)
-                    // Now do the following:
-                      // 1. Send this to the backend to save in the database
-                      // 2. Save this in a state variable to display the html instructions, distance, and duration
-                      // 3. If distance < 3 miles... rerout with travelMode: 'WALKING' and then run the algorithm to see what's a better transportation option.
-                  }
-                })
-
-                directionsRenderer.setMap(map)
-
-                setDirectionMarkers([])
-              }
-							// this directionMarkers updates. But when you leave this useEffect. directionMarkers is empty again?
+							setDirectionMarkers((prev) => [
+								...prev,
+								{
+									lat: mapsMouseEvent.latLng.lat(),
+									lng: mapsMouseEvent.latLng.lng(),
+								},
+							]);
 						}
 					}
 				);
+
+				if (!directionsMode) {
+					setDirectionMarkers([]);
+
+					directionsRenderer.setMap(null);
+				}
 
 				return () => {
 					google.maps.event.removeListener(mapClickerListener);
 				};
 			}
 		}, [directionsMode]);
-
-		useEffect(() => {
-			console.log("directionMarkers: ", directionMarkers);
-		}, [directionMarkers]);
 
 		// get the markers
 		useEffect(async () => {
@@ -116,6 +85,37 @@ export default function Maps({
 				console.log("Error fetching markers in UI: ", error);
 			}
 		}, [update]);
+
+		useEffect(() => {
+			// This section displays the directions.
+			if (directionMarkers.length == 2) {
+				var directionsService = new google.maps.DirectionsService();
+				// var directionsRenderer = new google.maps.DirectionsRenderer();
+
+				var request = {
+					origin: directionMarkers[0],
+					destination: directionMarkers[1],
+					travelMode: "DRIVING",
+				};
+
+				directionsService.route(request, (result, status) => {
+					// send the request to get the directions
+					console.log("Request: ", request);
+					if (status === "OK") {
+						console.log("Result: ", result);
+						// Draw the directions on the map
+						directionsRenderer.setDirections(result);
+
+						// Save this in a state variable to display the html instructions, distance, and duration
+						setDirectionsResults(result);
+						// 3. If distance < 3 miles... reroute with travelMode: 'WALKING' and then run the algorithm to see what's a better transportation option.
+						// Then compare with Driving stuff. Right now we can just go with driving.
+					}
+				});
+
+				directionsRenderer.setMap(map);
+			}
+		}, [directionMarkers]);
 
 		return (
 			<div

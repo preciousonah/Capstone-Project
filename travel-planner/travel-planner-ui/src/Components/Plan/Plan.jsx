@@ -2,8 +2,9 @@ import "./Plan.css";
 import Notes from "../Notes/Notes";
 import Maps from "../Maps/Maps";
 import SelectTripPage from "../SelectTrip/SelectTrip";
+import axios from "axios";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
@@ -12,26 +13,82 @@ const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
 export default function Plan(props) {
 	const [tripDetails, setTripDetails] = useState(null);
 	const [directionsMode, setDirectionsMode] = useState(false);
+	const [directionsResults, setDirectionsResults] = useState(null);
+	const [directionsOrigin, setDirectionsOrigin] = useState("");
+	const [directionsDestination, setDirectionsDestination] = useState("");
 	const [directionMarkers, setDirectionMarkers] = useState([]);
 
-	useEffect(() => {
-		if (!directionsMode) {
-			setDirectionMarkers([]);
-		}
-	}, [directionsMode]);
+	// Instead we need to save the results from that request.
+	// 1. Send this to the backend to be saved in the database
+	// 2. Render these new instructions?
+	// 3. We can do so with a useEffect reading a useState which contains all the queries from the backend. Create an update variable to reread?
 
-	const getDirections = () => {
-		console.log("Got directions!!");
+	const calculateBestMethodOfTravel = () => {
+		// query for both walking and driving duration and distance (values)
+		// use will weight the following:
+
+		// These are weights, they add up to 1, should they really?
+		// This'll be hard to adjust. Honestly they can just all be random percentages and we'll just weight everything
+		// let's look at how walkability works.
+
+		let elevation = 0.4;
+		let walkability = 0.3;
+		let weather = 0.2;
+		let duration = 0.1;
 	};
 
-	useEffect(() => {
+	const getDirections = () => {
+		console.log("Saving directions now!");
 
-		console.log("Direction markers in plan:", directionMarkers) // this is never called, so even though state is being updated... it's not being updated...
+		const result = directionsResults.routes[0].legs[0];
 
-		if (directionMarkers.length === 2) {
-			getDirections();
-		}
-	}, [directionMarkers]);
+		var directions = [];
+
+		result.steps.forEach((step) => {
+			directions.push(step.instructions);
+		});
+
+		console.log("origin: ", {
+			name: directionsOrigin,
+			address: result.start_address,
+			coordinate: directionMarkers[0],
+		});
+
+		console.log("destination: ", {
+			name: directionsDestination,
+			address: result.end_address,
+			coordinate: directionMarkers[1],
+		});
+
+		axios.post(`http://localhost:${props.PORT}/maps/getDirections`, {
+			type: "DRIVING",
+			duration: result.duration,
+			distance: result.distance,
+			directions: directions,
+			origin: {
+				name: directionsOrigin,
+				address: result.start_address,
+				coordinate: directionMarkers[0],
+			},
+			destination: {
+				name: directionsDestination,
+				address: result.end_address,
+				coordinate: directionMarkers[1],
+			},
+		});
+
+		// Take in results
+		// Add the trip/route to a dropdown menu in the Directions component
+		// which on click can expand for all instructions (and hopefully also display it on the map... this can be a stretch)
+		// display duration, distance, best method of travel
+		// Calculate this
+
+		// Allow the user to specify exactly how they want this.
+
+		setDirectionsResults(null);
+		setDirectionsOrigin("");
+		setDirectionsDestination("");
+	};
 
 	const [curNote, setCurNote] = useState({
 		title: "Note",
@@ -59,6 +116,7 @@ export default function Plan(props) {
 									PORT={props.PORT}
 									setCurNote={setCurNote}
 									directionsMode={directionsMode}
+									setDirectionsResults={setDirectionsResults}
 									directionMarkers={directionMarkers}
 									setDirectionMarkers={setDirectionMarkers}
 								/>
@@ -71,6 +129,25 @@ export default function Plan(props) {
 						>
 							Directions Mode: <p>{directionsMode ? "on" : "off"}</p>
 						</button>
+						{directionsResults ? (
+							<div className="save-directions-box">
+								<input
+									placeholder="Origin"
+									value={directionsOrigin}
+									onChange={(event) =>
+										setDirectionsOrigin(event.currentTarget.value)
+									}
+								/>
+								<input
+									placeholder="Destination"
+									value={directionsDestination}
+									onChange={(event) =>
+										setDirectionsDestination(event.currentTarget.value)
+									}
+								/>
+								<button onClick={getDirections}>Save directions</button>
+							</div>
+						) : null}
 					</div>
 					<div className="right-app">
 						<h1 className="map-title">{tripDetails.MapName}</h1>

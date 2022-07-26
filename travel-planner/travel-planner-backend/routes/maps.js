@@ -5,8 +5,41 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
 const axios = require("axios");
+// const {Client} = require("@googlemaps/google-maps-services-js");
 
 // create delete pin endpoint?
+
+router.post("/getDirections", async (req, res) => {
+	const type = req.body.type;
+	const origin = req.body.origin;
+	const destination = req.body.destination;
+	const distance = req.body.distance;
+	const duration = req.body.duration;
+	const directionsArr = req.body.directions
+
+	// Save in the database
+	const Directions = Parse.Object.extend("Directions");
+
+	try {
+		const direction = new Directions();
+		direction.set("Origin", origin)
+		direction.set("Destination", destination)
+		direction.set("TravelMode", type)
+		direction.set("Duration", duration)
+		direction.set("Distance", distance)
+		direction.set("Directions", directionsArr)
+
+		direction.save()
+			.then(() => {
+				res.status(200).send({ message: "Success!" })
+			})
+	}
+	catch (error) {
+		console.log("Error: ", error)
+		res.status(400).send({message: error, type: "Error"})
+	}
+
+});
 
 router.post("/newMap", async (req, res) => {
 	try {
@@ -31,9 +64,8 @@ router.post("/newMap", async (req, res) => {
 				const user = session.get("user"); // sometimes I get an error... ParseError: User is required. Don't know what's causing this though...
 				if (user) {
 					map.set("User", user);
-				}
-				else {
-					res.status(400).send({message: "ERROR: no user found."})
+				} else {
+					res.status(400).send({ message: "ERROR: no user found." });
 				}
 			} else {
 				res.status(400).send({
