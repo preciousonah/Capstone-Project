@@ -122,7 +122,7 @@ export default function SelectTripPage(props) {
 								!value ||
 								child.props.children
 									.toLowerCase()
-									.startsWith(value.toLowerCase())
+									.includes(value.toLowerCase())
 						)}
 					</ul>
 				</div>
@@ -149,10 +149,10 @@ export default function SelectTripPage(props) {
 		<div className="select-trip-page">
 			<Dropdown>
 				<Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-					Select you trip!
+					Select your trip!
 				</Dropdown.Toggle>
 
-				<Dropdown.Menu as={CustomMenu}>
+				<Dropdown.Menu className="outer-dropdown" as={CustomMenu}>
 					{trips.map((trip) => (
 						<Dropdown.Item
 							key={trip.objectId}

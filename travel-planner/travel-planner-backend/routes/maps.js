@@ -15,30 +15,50 @@ router.post("/getDirections", async (req, res) => {
 	const destination = req.body.destination;
 	const distance = req.body.distance;
 	const duration = req.body.duration;
-	const directionsArr = req.body.directions
+	const directionsArr = req.body.directions;
 
 	// Save in the database
 	const Directions = Parse.Object.extend("Directions");
+	const Maps = Parse.Object.extend("Maps");
 
 	try {
 		const direction = new Directions();
-		direction.set("Origin", origin)
-		direction.set("Destination", destination)
-		direction.set("TravelMode", type)
-		direction.set("Duration", duration)
-		direction.set("Distance", distance)
-		direction.set("Directions", directionsArr)
+		const mapPointer = new Maps().set("objectId", req.body.mapId);
 
-		direction.save()
-			.then(() => {
-				res.status(200).send({ message: "Success!" })
-			})
-	}
-	catch (error) {
-		console.log("Error: ", error)
-		res.status(400).send({message: error, type: "Error"})
-	}
+		direction.set("Origin", origin);
+		direction.set("Destination", destination);
+		direction.set("TravelMode", type);
+		direction.set("Duration", duration);
+		direction.set("Distance", distance);
+		direction.set("Directions", directionsArr);
+		direction.set("Map", mapPointer);
 
+		direction.save().then(() => {
+			res.status(200).send({ message: "Success!" });
+		});
+	} catch (error) {
+		console.log("Error: ", error);
+		res.status(400).send({ message: error, type: "Error" });
+	}
+});
+
+router.post("/getMapDirections", async (req, res) => {
+	const Maps = Parse.Object.extend("Maps");
+	const mapPointer = new Maps().set("objectId", req.body.mapId);
+
+	let query = new Parse.Query("Directions");
+	query.equalTo("Map", mapPointer);
+	query
+		.find()
+		.then(function (directions) {
+			console.log("Directions: ", directions);
+			res.status(200).send(directions);
+		})
+		.catch((error) => {
+			res.status(400).send({
+				message: error,
+			});
+		});
 });
 
 router.post("/newMap", async (req, res) => {
@@ -88,8 +108,6 @@ router.post("/newMap", async (req, res) => {
 });
 
 router.post("/getUserMaps", async (req, res) => {
-	// this is the only way I can do it right now without getting undefined returned. Cannot run this in models and then return here
-
 	// fetch the user
 	let query = new Parse.Query("_Session");
 	query.equalTo("sessionToken", req.body.sessionToken);
@@ -103,11 +121,14 @@ router.post("/getUserMaps", async (req, res) => {
 			query
 				.find()
 				.then(function (maps) {
-					console.log(maps);
 					res.status(200).send(maps);
 				})
 				.catch((error) => {
-					console.log("Confused? ", error);
+					res.status(400).send({
+						typeStatus: "danger",
+						message: "ERROR: Query failed to get maps given user.",
+						error: error,
+					});
 				});
 		} else {
 			res.status(400).send({
@@ -122,8 +143,6 @@ router.post("/createNewMarker", async (req, res) => {
 	const mapId = req.body.mapId; // Maps object
 	const location = req.body.location; // {lat: , lng:}
 	const address = req.body.address;
-
-	// or call get address here!
 
 	try {
 		const Markers = Parse.Object.extend("Markers");

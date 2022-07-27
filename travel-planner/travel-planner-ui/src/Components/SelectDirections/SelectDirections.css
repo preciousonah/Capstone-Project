@@ -1,0 +1,75 @@
+.select-directions-box {
+  display: flex;
+  background-color: bisque;
+  border-radius: 20px;
+  padding: 1vh 1vw;
+  margin: 1vh 0px;
+  max-height: 40vh;
+  overflow-y: auto;
+  overflow-x: wrap;
+}
+
+.select-directions-box .dropdown {
+  flex: 1;
+}
+
+.outer-dropdown {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.select-directions-box .outer-dropdown{
+  position: relative !important;
+  transform: none !important;
+  max-height: 30vh;
+}
+
+.select-directions-box .dropdown a {
+  font-size: 1.2vh;
+  color: rgba(85, 38, 0, 0.658);
+}
+
+.select-directions-box .dropdown a:hover {
+  color: rgb(85, 38, 0);
+}
+
+.select-directions-box .dropdown > a {
+  font-size: 1.5vh;
+  color: rgb(85, 38, 0);
+}
+
+.select-directions-box .form-control::placeholder {
+  color: white;
+}
+
+.select-directions-box .form-control {
+  color: white;
+  background-color:rgba(85, 38, 0, 0.363);
+  border-radius: 20px;
+  padding: 0.2vh 0.4vw;
+  width: 90%;
+  margin-top: 10px;
+  border: none;
+  box-shadow: 0px 8px 20px 2px rgba(85, 38, 0, 0.329);
+	transition: all 0.4s ease-in-out;
+  border: 1px rgba(85, 38, 0, 0.39) solid;
+  outline: none;
+}
+
+.select-directions-box .form-control:focus{
+  background-color:rgba(85, 38, 0, 0.658);
+  transition: all 0.4s ease-in-out;
+}
+
+.select-directions-box .form-control:hover{
+  background-color:rgba(85, 38, 0, 0.658);
+  transition: all 0.3s ease-in-out;
+}
+
+.direction-results {
+  flex: 1;
+}
+
+.current-directions {
+  font-size: 1.2vh;
+}

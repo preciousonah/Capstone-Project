@@ -44,8 +44,6 @@ export default function Maps({
 					map,
 					"click",
 					(mapsMouseEvent) => {
-						// map.panTo(event.latLng)
-
 						if (directionsMode) {
 							setDirectionMarkers((prev) => [
 								...prev,

@@ -17,7 +17,6 @@ Parse.serverURL = "https://parseapi.back4app.com/parse";
 Parse.Cloud.useMasterKey();
 
 const users = require("./routes/users");
-const notes = require("./routes/notes");
 const maps = require("./routes/maps");
 
 const app = express();
@@ -27,7 +26,6 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.use("/notes", notes);
 app.use("/users", users);
 app.use("/maps", maps);
 

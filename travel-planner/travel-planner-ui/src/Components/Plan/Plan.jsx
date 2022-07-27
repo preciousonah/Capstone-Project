@@ -2,6 +2,7 @@ import "./Plan.css";
 import Notes from "../Notes/Notes";
 import Maps from "../Maps/Maps";
 import SelectTripPage from "../SelectTrip/SelectTrip";
+import SelectDirections from "../SelectDirections/SelectDirections";
 import axios from "axios";
 
 import { useState } from "react";
@@ -43,22 +44,15 @@ export default function Plan(props) {
 		const result = directionsResults.routes[0].legs[0];
 
 		var directions = [];
+		let newEle = document.createElement('div')
 
 		result.steps.forEach((step) => {
-			directions.push(step.instructions);
+
+			newEle.innerHTML = step.instructions
+
+			directions.push(newEle.innerText);
 		});
 
-		console.log("origin: ", {
-			name: directionsOrigin,
-			address: result.start_address,
-			coordinate: directionMarkers[0],
-		});
-
-		console.log("destination: ", {
-			name: directionsDestination,
-			address: result.end_address,
-			coordinate: directionMarkers[1],
-		});
 
 		axios.post(`http://localhost:${props.PORT}/maps/getDirections`, {
 			type: "DRIVING",
@@ -75,6 +69,7 @@ export default function Plan(props) {
 				address: result.end_address,
 				coordinate: directionMarkers[1],
 			},
+			mapId: tripDetails.objectId,
 		});
 
 		// Take in results
@@ -122,12 +117,13 @@ export default function Plan(props) {
 								/>
 							</div>
 						</Wrapper>
-						<button
+							<button
+								className="directions-mode-button"
 							onClick={() => {
 								setDirectionsMode(directionsMode ? false : true);
 							}}
 						>
-							Directions Mode: <p>{directionsMode ? "on" : "off"}</p>
+								<span>Directions Mode</span> <span className={directionsMode ? "directions-mode-toggle directions-mode-toggle-on" : "directions-mode-toggle"}>{directionsMode ? "ON" : "OFF"}</span>
 						</button>
 						{directionsResults ? (
 							<div className="save-directions-box">
@@ -148,6 +144,7 @@ export default function Plan(props) {
 								<button onClick={getDirections}>Save directions</button>
 							</div>
 						) : null}
+						<SelectDirections PORT={props.PORT} mapId={tripDetails.objectId} />
 					</div>
 					<div className="right-app">
 						<h1 className="map-title">{tripDetails.MapName}</h1>
