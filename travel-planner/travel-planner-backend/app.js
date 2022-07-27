@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const Parse = require("parse/node");
-
 require("dotenv").config();
 
 const APP_ID = process.env.PARSE_APP_ID;
@@ -18,6 +17,7 @@ Parse.Cloud.useMasterKey();
 
 const users = require("./routes/users");
 const maps = require("./routes/maps");
+const recommendations = require("./routes/recommendations")
 
 const app = express();
 
@@ -28,6 +28,7 @@ app.use(bodyParser.json());
 
 app.use("/users", users);
 app.use("/maps", maps);
+app.use("/recommendations", recommendations)
 
 app.get("/", () => {
 	res.status(200).send({ location: "Home page" });
