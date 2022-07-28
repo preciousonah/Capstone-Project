@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-// const mapsModel = require("./../models/maps");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
 const axios = require("axios");
-// const {Client} = require("@googlemaps/google-maps-services-js");
 
-// create delete pin endpoint?
+// TO-DO: create delete pin endpoint
 
-router.post("/getDirections", async (req, res) => {
+router.post("/createMapDirections", async (req, res) => {
 	const type = req.body.type;
 	const origin = req.body.origin;
 	const destination = req.body.destination;
@@ -42,7 +40,7 @@ router.post("/getDirections", async (req, res) => {
 	}
 });
 
-router.post("/getMapDirections", async (req, res) => {
+router.post("/getAllSavedDirections", async (req, res) => {
 	const Maps = Parse.Object.extend("Maps");
 	const mapPointer = new Maps().set("objectId", req.body.mapId);
 
@@ -68,7 +66,6 @@ router.post("/newMap", async (req, res) => {
 		let sessionToken = req.body.sessionToken;
 
 		// Pass in center and get lat and lng here:
-		// Use this temporarily since getAddress is broken.
 		const lat = 30;
 		const lng = 0;
 
@@ -81,7 +78,7 @@ router.post("/newMap", async (req, res) => {
 		query.equalTo("sessionToken", sessionToken);
 		query.first().then(function (session) {
 			if (session) {
-				const user = session.get("user"); // sometimes I get an error... ParseError: User is required. Don't know what's causing this though...
+				const user = session.get("user");
 				if (user) {
 					map.set("User", user);
 				} else {

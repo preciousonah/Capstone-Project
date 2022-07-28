@@ -8,7 +8,8 @@ export default function Maps({
 	trip,
 	PORT,
 	directionsMode,
-	setDirectionsResults,
+	setDrivingResults,
+	setWalkingResults,
 	directionMarkers,
 	setDirectionMarkers,
 }) {
@@ -98,16 +99,29 @@ export default function Maps({
 
 				directionsService.route(request, (result, status) => {
 					// send the request to get the directions
-					console.log("Request: ", request);
 					if (status === "OK") {
-						console.log("Result: ", result);
 						// Draw the directions on the map
 						directionsRenderer.setDirections(result);
 
-						// Save this in a state variable to display the html instructions, distance, and duration
-						setDirectionsResults(result);
-						// 3. If distance < 3 miles... reroute with travelMode: 'WALKING' and then run the algorithm to see what's a better transportation option.
-						// Then compare with Driving stuff. Right now we can just go with driving.
+						const routeResult = result.routes[0].legs[0];
+						setDrivingResults(routeResult);
+						// 3. If distance < 2 miles... reroute with travelMode: 'WALKING' and then run the algorithm to see what's a better transportation option.
+						if (routeResult.distance.value <= 3220) {
+							// distance.value is always in meters (2 miles ~ 3220 meters)
+							request.travelMode = "WALKING";
+
+							directionsService.route(walkRequest, (walkResult, walkStatus) => {
+								if (walkStatus === "OK") {
+									setWalkingResults(walkResult.routes[0].legs[0]);
+								} else {
+									setWalkingResults("");
+								}
+							});
+						} else {
+							setWalkingResults("");
+						}
+					} else {
+						alert("No routes possible. Please try a different location.");
 					}
 				});
 
