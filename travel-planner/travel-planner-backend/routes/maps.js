@@ -1,12 +1,63 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-// const mapsModel = require("./../models/maps");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
 const axios = require("axios");
 
-// create delete pin endpoint?
+// TO-DO: create delete pin endpoint
+
+router.post("/createMapDirections", async (req, res) => {
+	const type = req.body.type;
+	const origin = req.body.origin;
+	const destination = req.body.destination;
+	const distance = req.body.distance;
+	const duration = req.body.duration;
+	const directionsArr = req.body.directions;
+
+	// Save in the database
+	const Directions = Parse.Object.extend("Directions");
+	const Maps = Parse.Object.extend("Maps");
+
+	try {
+		const direction = new Directions();
+		const mapPointer = new Maps().set("objectId", req.body.mapId);
+
+		direction.set("Origin", origin);
+		direction.set("Destination", destination);
+		direction.set("TravelMode", type);
+		direction.set("Duration", duration);
+		direction.set("Distance", distance);
+		direction.set("Directions", directionsArr);
+		direction.set("Map", mapPointer);
+
+		direction.save().then(() => {
+			res.status(200).send({ message: "Success!" });
+		});
+	} catch (error) {
+		console.log("Error: ", error);
+		res.status(400).send({ message: error, type: "Error" });
+	}
+});
+
+router.post("/getAllSavedDirections", async (req, res) => {
+	const Maps = Parse.Object.extend("Maps");
+	const mapPointer = new Maps().set("objectId", req.body.mapId);
+
+	let query = new Parse.Query("Directions");
+	query.equalTo("Map", mapPointer);
+	query
+		.find()
+		.then(function (directions) {
+			console.log("Directions: ", directions);
+			res.status(200).send(directions);
+		})
+		.catch((error) => {
+			res.status(400).send({
+				message: error,
+			});
+		});
+});
 
 router.post("/newMap", async (req, res) => {
 	try {
@@ -15,7 +66,6 @@ router.post("/newMap", async (req, res) => {
 		let sessionToken = req.body.sessionToken;
 
 		// Pass in center and get lat and lng here:
-		// Use this temporarily since getAddress is broken.
 		const lat = 30;
 		const lng = 0;
 
@@ -28,12 +78,11 @@ router.post("/newMap", async (req, res) => {
 		query.equalTo("sessionToken", sessionToken);
 		query.first().then(function (session) {
 			if (session) {
-				const user = session.get("user"); // sometimes I get an error... ParseError: User is required. Don't know what's causing this though...
+				const user = session.get("user");
 				if (user) {
 					map.set("User", user);
-				}
-				else {
-					res.status(400).send({message: "ERROR: no user found."})
+				} else {
+					res.status(400).send({ message: "ERROR: no user found." });
 				}
 			} else {
 				res.status(400).send({
@@ -56,8 +105,6 @@ router.post("/newMap", async (req, res) => {
 });
 
 router.post("/getUserMaps", async (req, res) => {
-	// this is the only way I can do it right now without getting undefined returned. Cannot run this in models and then return here
-
 	// fetch the user
 	let query = new Parse.Query("_Session");
 	query.equalTo("sessionToken", req.body.sessionToken);
@@ -71,11 +118,14 @@ router.post("/getUserMaps", async (req, res) => {
 			query
 				.find()
 				.then(function (maps) {
-					console.log(maps);
 					res.status(200).send(maps);
 				})
 				.catch((error) => {
-					console.log("Confused? ", error);
+					res.status(400).send({
+						typeStatus: "danger",
+						message: "ERROR: Query failed to get maps given user.",
+						error: error,
+					});
 				});
 		} else {
 			res.status(400).send({
@@ -90,8 +140,6 @@ router.post("/createNewMarker", async (req, res) => {
 	const mapId = req.body.mapId; // Maps object
 	const location = req.body.location; // {lat: , lng:}
 	const address = req.body.address;
-
-	// or call get address here!
 
 	try {
 		const Markers = Parse.Object.extend("Markers");

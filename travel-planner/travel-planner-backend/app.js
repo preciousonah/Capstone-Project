@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const Parse = require("parse/node");
-
 require("dotenv").config();
 
 const APP_ID = process.env.PARSE_APP_ID;
@@ -17,8 +16,8 @@ Parse.serverURL = "https://parseapi.back4app.com/parse";
 Parse.Cloud.useMasterKey();
 
 const users = require("./routes/users");
-const notes = require("./routes/notes");
 const maps = require("./routes/maps");
+const recommendations = require("./routes/recommendations")
 
 const app = express();
 
@@ -27,9 +26,9 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.use("/notes", notes);
 app.use("/users", users);
 app.use("/maps", maps);
+app.use("/recommendations", recommendations)
 
 app.get("/", () => {
 	res.status(200).send({ location: "Home page" });

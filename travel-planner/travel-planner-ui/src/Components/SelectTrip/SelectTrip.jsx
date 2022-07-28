@@ -1,12 +1,10 @@
 import "./SelectTrip.css";
-
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../../UserContext";
-
 import Dropdown from "react-bootstrap/Dropdown";
-import Form from "react-bootstrap/Form";
-
+import CustomToggle from "./../Dropdown/CustomToggle"
+import CustomMenu from "./../Dropdown/CustomMenu"
 import Loading from "../Loading/Loading";
 
 function CreateNewTrip(props) {
@@ -79,57 +77,6 @@ export default function SelectTripPage(props) {
 		setTrips(res.data);
 	}, []);
 
-	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-		<a
-			href=""
-			ref={ref}
-			onClick={(e) => {
-				e.preventDefault();
-				onClick(e);
-			}}
-		>
-			{children}
-			&#x25bc;
-		</a>
-	));
-
-	const CustomMenu = React.forwardRef(
-		({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
-			const [value, setValue] = useState("");
-
-			return (
-				<div
-					ref={ref}
-					style={style}
-					className={className}
-					aria-labelledby={labeledBy}
-				>
-					<Form.Control
-						autoFocus
-						className="mx-3 my-2 w-auto"
-						placeholder="Type to filter..."
-						onChange={(e) => setValue(e.target.value)}
-						onKeyDown={(event) => {
-							if (event.key === "Enter") {
-								setCreatingTrip(value);
-							}
-						}}
-						value={value}
-					/>
-					<ul className="list-unstyled">
-						{React.Children.toArray(children).filter(
-							(child) =>
-								!value ||
-								child.props.children
-									.toLowerCase()
-									.startsWith(value.toLowerCase())
-						)}
-					</ul>
-				</div>
-			);
-		}
-	);
-
 	const onClickTripName = (event) => {
 		const tripId = event.currentTarget.getAttribute("data-objectid");
 
@@ -149,10 +96,10 @@ export default function SelectTripPage(props) {
 		<div className="select-trip-page">
 			<Dropdown>
 				<Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-					Select you trip!
+					Select your trip!
 				</Dropdown.Toggle>
 
-				<Dropdown.Menu as={CustomMenu}>
+				<Dropdown.Menu className="outer-dropdown" as={CustomMenu}>
 					{trips.map((trip) => (
 						<Dropdown.Item
 							key={trip.objectId}
