@@ -4,8 +4,8 @@ import Maps from "../Maps/Maps";
 import SelectTripPage from "../SelectTrip/SelectTrip";
 import SelectDirections from "../SelectDirections/SelectDirections";
 import axios from "axios";
-
-import { useState } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
+import { UserContext } from "../../UserContext";
 
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
@@ -15,72 +15,98 @@ export default function Plan(props) {
 	const [tripDetails, setTripDetails] = useState(null);
 	const [directionsMode, setDirectionsMode] = useState(false);
 	const [directionsResults, setDirectionsResults] = useState(null);
+	const [walkingResults, setWalkingResults] = useState(null);
+	const [drivingResults, setDrivingResults] = useState(null);
+	const previousVals = useRef({ walkingResults, drivingResults });
 	const [directionsOrigin, setDirectionsOrigin] = useState("");
 	const [directionsDestination, setDirectionsDestination] = useState("");
 	const [directionMarkers, setDirectionMarkers] = useState([]);
+	const { sessionToken } = useContext(UserContext);
 
-	// Instead we need to save the results from that request.
-	// 1. Send this to the backend to be saved in the database
-	// 2. Render these new instructions?
-	// 3. We can do so with a useEffect reading a useState which contains all the queries from the backend. Create an update variable to reread?
+	useEffect(() => {
+		const fetchRecommendations = async () => {
+			if (
+				previousVals.current.drivingResults != drivingResults &&
+				previousVals.current.walkingResults != walkingResults
+			) {
+				previousVals.current = { walkingResults, drivingResults };
+				if (walkingResults === "") {
+					setDirectionsResults({
+						result: drivingResults,
+						type: "DRIVING",
+						reason: "The distance is beyond walking capabilities.",
+					});
+					return;
+				}
+				if (walkingResults && drivingResults) {
+					const result = await axios.post(
+						`http://localhost:${props.PORT}/recommendations`,
+						{
+							location: directionMarkers[0],
+							walkingDuration: walkingResults.duration,
+							drivingDuration: drivingResults.duration,
+							sessionToken: sessionToken,
+						}
+					);
 
-	const calculateBestMethodOfTravel = () => {
-		// query for both walking and driving duration and distance (values)
-		// use will weight the following:
+					console.log("Result: ", result);
 
-		// These are weights, they add up to 1, should they really?
-		// This'll be hard to adjust. Honestly they can just all be random percentages and we'll just weight everything
-		// let's look at how walkability works.
-
-		let elevation = 0.4;
-		let walkability = 0.3;
-		let weather = 0.2;
-		let duration = 0.1;
-	};
+					if (result.data.type === "DRIVING") {
+						setDirectionsResults({
+							result: drivingResults,
+							type: "DRIVING",
+							reason: result.data.reason,
+						});
+					} else if (result.data.type === "WALKING") {
+						setDirectionsResults({
+							result: walkingResults,
+							type: "WALKING",
+							reason: result.data.reason,
+						});
+					} else {
+						console.log(
+							"ERROR: invalid travel mode specified: ",
+							result.data.type
+						);
+					}
+				}
+			}
+		};
+		fetchRecommendations();
+	}, [walkingResults, drivingResults]);
 
 	const getDirections = () => {
-		console.log("Saving directions now!");
-
-		const result = directionsResults.routes[0].legs[0];
-
 		var directions = [];
-		let newEle = document.createElement('div')
+		let newEle = document.createElement("div");
 
-		result.steps.forEach((step) => {
-
-			newEle.innerHTML = step.instructions
+		directionsResults.result.steps.forEach((step) => {
+			newEle.innerHTML = step.instructions;
 
 			directions.push(newEle.innerText);
 		});
 
-
-		axios.post(`http://localhost:${props.PORT}/maps/getDirections`, {
-			type: "DRIVING",
-			duration: result.duration,
-			distance: result.distance,
+		axios.post(`http://localhost:${props.PORT}/maps/createMapDirections`, {
+			type: directionsResults.type,
+			duration: directionsResults.result.duration,
+			distance: directionsResults.result.distance,
 			directions: directions,
 			origin: {
 				name: directionsOrigin,
-				address: result.start_address,
+				address: directionsResults.result.start_address,
 				coordinate: directionMarkers[0],
 			},
 			destination: {
 				name: directionsDestination,
-				address: result.end_address,
+				address: directionsResults.result.end_address,
 				coordinate: directionMarkers[1],
 			},
 			mapId: tripDetails.objectId,
+			reason: directionsResults.reason,
 		});
 
-		// Take in results
-		// Add the trip/route to a dropdown menu in the Directions component
-		// which on click can expand for all instructions (and hopefully also display it on the map... this can be a stretch)
-		// display duration, distance, best method of travel
-		// Calculate this
-
-		// Allow the user to specify exactly how they want this.
-
 		setDirectionsResults(null);
+		setDrivingResults(null);
+		setWalkingResults(null);
 		setDirectionsOrigin("");
 		setDirectionsDestination("");
 	};
@@ -92,7 +118,6 @@ export default function Plan(props) {
 	});
 
 	const render = () => {
-		console.log("Not working/loading rendering?");
 		return <h1>Not working</h1>;
 	};
 
@@ -111,19 +136,29 @@ export default function Plan(props) {
 									PORT={props.PORT}
 									setCurNote={setCurNote}
 									directionsMode={directionsMode}
-									setDirectionsResults={setDirectionsResults}
 									directionMarkers={directionMarkers}
 									setDirectionMarkers={setDirectionMarkers}
+									setDrivingResults={setDrivingResults}
+									setWalkingResults={setWalkingResults}
 								/>
 							</div>
 						</Wrapper>
-							<button
-								className="directions-mode-button"
+						<button
+							className="directions-mode-button"
 							onClick={() => {
 								setDirectionsMode(directionsMode ? false : true);
 							}}
 						>
-								<span>Directions Mode</span> <span className={directionsMode ? "directions-mode-toggle directions-mode-toggle-on" : "directions-mode-toggle"}>{directionsMode ? "ON" : "OFF"}</span>
+							<span>Directions Mode</span>{" "}
+							<span
+								className={
+									directionsMode
+										? "directions-mode-toggle directions-mode-toggle-on"
+										: "directions-mode-toggle"
+								}
+							>
+								{directionsMode ? "ON" : "OFF"}
+							</span>
 						</button>
 						{directionsResults ? (
 							<div className="save-directions-box">

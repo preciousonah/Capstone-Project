@@ -14,6 +14,7 @@ router.post("/createMapDirections", async (req, res) => {
 	const distance = req.body.distance;
 	const duration = req.body.duration;
 	const directionsArr = req.body.directions;
+	const reason = req.body.reason;
 
 	// Save in the database
 	const Directions = Parse.Object.extend("Directions");
@@ -30,12 +31,12 @@ router.post("/createMapDirections", async (req, res) => {
 		direction.set("Distance", distance);
 		direction.set("Directions", directionsArr);
 		direction.set("Map", mapPointer);
+		direction.set("Reason", reason);
 
 		direction.save().then(() => {
 			res.status(200).send({ message: "Success!" });
 		});
 	} catch (error) {
-		console.log("Error: ", error);
 		res.status(400).send({ message: error, type: "Error" });
 	}
 });
@@ -49,7 +50,6 @@ router.post("/getAllSavedDirections", async (req, res) => {
 	query
 		.find()
 		.then(function (directions) {
-			console.log("Directions: ", directions);
 			res.status(200).send(directions);
 		})
 		.catch((error) => {
@@ -74,6 +74,7 @@ router.post("/newMap", async (req, res) => {
 
 		const map = new Maps();
 
+		// Get user given the session token
 		let query = new Parse.Query("_Session");
 		query.equalTo("sessionToken", sessionToken);
 		query.first().then(function (session) {
