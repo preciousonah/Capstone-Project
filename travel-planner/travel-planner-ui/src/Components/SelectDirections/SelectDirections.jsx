@@ -2,13 +2,15 @@ import "./SelectDirections.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Dropdown from "react-bootstrap/Dropdown";
-import CustomToggle from "./../Dropdown/CustomToggle"
-import CustomMenu from "./../Dropdown/CustomMenu"
+import CustomToggle from "./../Dropdown/CustomToggle";
+import CustomMenu from "./../Dropdown/CustomMenu";
+import DirectionReasonBubble from "./DirectionReasonBubble/DirectionReasonBubble";
 
 export default function SelectDirections({ PORT, mapId }) {
 	// get all directions from backend
 	const [directions, setDirections] = useState(null);
 	const [curDirections, setCurDirections] = useState(null);
+	const [isInfoBubbleShown, setIsInfoBubbleShown] = useState(false);
 
 	useEffect(() => {
 		// fetch directions for the mapId
@@ -63,6 +65,15 @@ export default function SelectDirections({ PORT, mapId }) {
 			<div className="direction-results">
 				{curDirections ? (
 					<div className="current-directions">
+						<p>
+							<b>{curDirections.TravelMode}</b> directions{" "}
+							<i
+								className="fa-solid fa-circle-info"
+								onClick={() => {
+									setIsInfoBubbleShown(isInfoBubbleShown ? false : true);
+								}}
+							></i>
+						</p>
 						<hr></hr>
 						<p>
 							<b>Distance:</b> {curDirections.Distance.text}
@@ -77,6 +88,13 @@ export default function SelectDirections({ PORT, mapId }) {
 					</div>
 				) : null}
 			</div>
+			{isInfoBubbleShown && (
+				<DirectionReasonBubble
+					travelMode={curDirections.TravelMode}
+					reason={curDirections.Reason}
+					setOpen={setIsInfoBubbleShown}
+				/>
+			)}
 		</div>
 	);
 }

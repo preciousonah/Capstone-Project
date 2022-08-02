@@ -1,0 +1,50 @@
+.direction-reason-bubble {
+	position: absolute;
+	margin: 2vh 3vw;
+	background-color: white;
+	padding: 1vh 1vw;
+	border-radius: 20px;
+}
+
+.direction-reason-top {
+	display: flex;
+	font-size: 12px;
+}
+
+.direction-reason-top button {
+	background-color: transparent;
+	border: none;
+	margin: 0px;
+	padding: 0px;
+	padding-right: 6px;
+	padding-top: 6px;
+	flex: 1;
+	display: flex;
+	justify-content: flex-end;
+	line-height: 3px;
+	height: 0px;
+	color: rgba(0, 0, 0, 0.671);
+	cursor: pointer;
+}
+.direction-reason-top button:hover {
+	font-weight: bolder;
+	font-size: large;
+	color: black;
+}
+
+.direction-reason-bubble h3 {
+	background-color: transparent;
+	border: none;
+	font-size: 16px;
+	margin-bottom: 2px;
+	overflow: wrap;
+	font-weight: bold;
+	width: 100%;
+	padding-right: 8vw;
+}
+
+.direction-reason-bubble p {
+	font-size: 14px;
+	overflow: wrap;
+	width: 16vw;
+}

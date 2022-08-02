@@ -70,19 +70,23 @@ export default function Maps({
 		}, [directionsMode]);
 
 		// get the markers
-		useEffect(async () => {
-			try {
-				const res = await axios.post(
-					`http://localhost:${PORT}/maps/getMarkers`,
-					{
-						mapId: trip.objectId,
-					}
-				);
-				setMarkers(res.data.markers);
-				setUpdate(false);
-			} catch (error) {
-				console.log("Error fetching markers in UI: ", error);
-			}
+		useEffect(() => {
+			const fetchMarkers = async () => {
+				try {
+					const res = await axios.post(
+						`http://localhost:${PORT}/maps/getMarkers`,
+						{
+							mapId: trip.objectId,
+						}
+					);
+					setMarkers(res.data.markers);
+					setUpdate(false);
+				} catch (error) {
+					console.log("Error fetching markers in UI: ", error);
+				}
+			};
+
+			fetchMarkers();
 		}, [update]);
 
 		useEffect(() => {
@@ -110,7 +114,7 @@ export default function Maps({
 							// distance.value is always in meters (2 miles ~ 3220 meters)
 							request.travelMode = "WALKING";
 
-							directionsService.route(walkRequest, (walkResult, walkStatus) => {
+							directionsService.route(request, (walkResult, walkStatus) => {
 								if (walkStatus === "OK") {
 									setWalkingResults(walkResult.routes[0].legs[0]);
 								} else {
