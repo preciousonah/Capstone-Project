@@ -10,7 +10,7 @@ export default function SelectDirections({ PORT, mapId }) {
 	// get all directions from backend
 	const [directions, setDirections] = useState(null);
 	const [curDirections, setCurDirections] = useState(null);
-	const [openMoreInfoBubble, setOpenMoreInfoBubble] = useState(false);
+	const [isInfoBubbleShown, setIsInfoBubbleShown] = useState(false);
 
 	useEffect(() => {
 		// fetch directions for the mapId
@@ -70,7 +70,7 @@ export default function SelectDirections({ PORT, mapId }) {
 							<i
 								className="fa-solid fa-circle-info"
 								onClick={() => {
-									setOpenMoreInfoBubble(openMoreInfoBubble ? false : true);
+									setIsInfoBubbleShown(isInfoBubbleShown ? false : true);
 								}}
 							></i>
 						</p>
@@ -88,11 +88,11 @@ export default function SelectDirections({ PORT, mapId }) {
 					</div>
 				) : null}
 			</div>
-			{openMoreInfoBubble && (
+			{isInfoBubbleShown && (
 				<DirectionReasonBubble
 					travelMode={curDirections.TravelMode}
 					reason={curDirections.Reason}
-					setOpen={setOpenMoreInfoBubble}
+					setOpen={setIsInfoBubbleShown}
 				/>
 			)}
 		</div>
