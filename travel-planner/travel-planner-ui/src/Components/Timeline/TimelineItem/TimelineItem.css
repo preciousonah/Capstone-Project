@@ -1,0 +1,42 @@
+.timeline-item {
+	background-color: rgba(255, 255, 255, 0.226);
+	border-radius: 20px;
+	padding: 20px;
+	margin: 10px 0px;
+	overflow: auto;
+	min-height: 35px;
+}
+
+.timeline-item-title {
+	margin: 10px 0px;
+}
+
+.timeline-item-duration-container {
+	display: flex;
+	align-items: center;
+}
+
+.timeline-item-duration {
+	color: rgba(85, 38, 0, 0.562);
+	margin-right: 30px;
+	font-size: 16px;
+}
+
+.timeline-item-time-container {
+	color: rgba(85, 38, 0, 0.562);
+	display: flex;
+}
+
+.timeline-item-time-container input {
+	color: inherit;
+	outline: none;
+	background-color: transparent;
+	border: none;
+	width: 18px;
+	font-size: 14px;
+}
+
+.timeline-item-time-container p {
+	color: inherit;
+	font-size: 14px;
+}

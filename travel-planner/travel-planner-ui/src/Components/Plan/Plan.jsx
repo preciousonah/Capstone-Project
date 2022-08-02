@@ -1,12 +1,12 @@
 import "./Plan.css";
 import Notes from "../Notes/Notes";
+import Timeline from "../Timeline/Timeline";
 import Maps from "../Maps/Maps";
 import SelectTripPage from "../SelectTrip/SelectTrip";
 import SelectDirections from "../SelectDirections/SelectDirections";
 import axios from "axios";
 import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../UserContext";
-
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
 const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
@@ -183,7 +183,8 @@ export default function Plan(props) {
 					</div>
 					<div className="right-app">
 						<h1 className="map-title">{tripDetails.MapName}</h1>
-						<Notes curNote={curNote} PORT={props.PORT} />
+						{/* <Notes curNote={curNote} PORT={props.PORT} /> */}
+						<Timeline mapId={tripDetails.objectId} PORT={props.PORT} />
 					</div>
 					<div className="directions-content"></div>
 				</div>

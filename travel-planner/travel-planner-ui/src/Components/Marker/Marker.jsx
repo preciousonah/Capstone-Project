@@ -2,6 +2,7 @@ import "./Marker.css";
 import { useEffect } from "react";
 import { render } from "react-dom";
 import Content from "./Content";
+import axios from "axios"
 
 export default function Marker(props) {
 	class InfoWindow extends google.maps.OverlayView {
@@ -76,19 +77,40 @@ export default function Marker(props) {
 	}
 
 	useEffect(() => {
-		const marker = new google.maps.Marker(props);
 
-		const popup = new InfoWindow(props.position);
-		popup.setMap(props.map);
-		popup.onRemove();
+		const createMarker = async () => {
+			const marker = new google.maps.Marker(props);
 
-		marker.addListener("click", () => {
-			popup.onAdd();
-		});
+			const popup = new InfoWindow(props.position);
+			popup.setMap(props.map);
+			popup.onRemove();
 
-		return () => {
-			marker.setMap(null);
-		};
+			marker.addListener("click", () => {
+				popup.onAdd();
+			});
+
+			marker.addListener("dblclick", () => {
+				// add to timeline on double click
+
+				// when this happens, I also need to pass in the timeline so that it's connected.
+				// I can pass in mapID to find it and add to that array
+				createTimelineItem(props.objectId)
+			})
+
+			return () => {
+				marker.setMap(null);
+			};
+		}
+
+		const createTimelineItem = async (markerId) => {
+			axios.post(
+				`http://localhost:${props.PORT}/timelines/createEvent`,
+				{
+					markerId: markerId
+				})
+		}
+
+		createMarker()
 	}, []);
 
 	return null;

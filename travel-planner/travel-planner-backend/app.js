@@ -18,6 +18,7 @@ Parse.Cloud.useMasterKey();
 const users = require("./routes/users");
 const maps = require("./routes/maps");
 const recommendations = require("./routes/recommendations")
+const timelines = require("./routes/timelines")
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(bodyParser.json());
 app.use("/users", users);
 app.use("/maps", maps);
 app.use("/recommendations", recommendations)
+app.use("/timelines", timelines)
 
 app.get("/", () => {
 	res.status(200).send({ location: "Home page" });
