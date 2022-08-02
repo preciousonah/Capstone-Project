@@ -1,0 +1,10 @@
+.user-preferences-page {
+  background-color: bisque;
+  border-radius: 20px;
+  padding: 1vh 1.2vw;
+  letter-spacing: 6px;
+}
+
+.user-preferences-page h1 {
+  text-shadow: 3px 3px rgba(80, 56, 26, 0.342);
+}
