@@ -17,10 +17,29 @@ router.post("/getAssociatedTimelines", async (req, res) => {
 		const timelines = await query.find();
 
 		res.status(200).send({ timelines: timelines });
-		// then on the front end, create a dropdown for this. The user will open up the selected timeline. Which are by date
-		// need to add button for user to create timeline
 	} catch (error) {
 		res.status(400).send({ message: error, type: "Danger" });
+	}
+});
+
+router.post("/createNewTimeline", async (req, res) => {
+	const mapId = req.body.mapId;
+	const date = req.body.date;
+
+	try {
+		const Timelines = Parse.Object.extend("Timelines");
+		const timeline = new Timelines();
+		timeline.set("Date", date);
+
+		const Maps = Parse.Object.extend("Maps");
+		const mapPointer = new Maps().set("objectId", mapId);
+		timeline.set("Map", mapPointer);
+
+		timeline.save().then(() => {
+			res.status(200).send({ timeline: timeline });
+		});
+	} catch (error) {
+		res.status(400).send({ error: error });
 	}
 });
 
@@ -40,19 +59,19 @@ router.post("/getTimelineDetails", async (req, res) => {
 		let timelineItems = await query.find();
 
 		// get all the markers associated with these timeline items
-		let alreadyQueriedIds = []
+		let alreadyQueriedIds = [];
 		let markers = [];
 		let markerId;
 
 		for (item of timelineItems) {
 			query = new Parse.Query("Markers");
 
-			markerId = item.get("Marker").id
+			markerId = item.get("Marker").id;
 			if (alreadyQueriedIds.includes(markerId)) {
-				continue
+				continue;
 			}
 
-			alreadyQueriedIds.push(markerId)
+			alreadyQueriedIds.push(markerId);
 			query.equalTo("objectId", markerId);
 
 			markers.push(await query.first());

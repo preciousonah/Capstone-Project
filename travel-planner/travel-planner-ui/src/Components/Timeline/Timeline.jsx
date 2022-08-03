@@ -55,11 +55,14 @@ export default function Timeline(props) {
 				setTimeline={setTimeline}
 				timelineMarkers={timelineMarkers}
 				setDisplayedMarkers={props.setMarkers}
+				mapId={props.mapId}
+				PORT={props.PORT}
+				setPossibleTimelines={setPossibleTimelines}
 			/>
 			{timelineItems && (
 				<div className="timeline-container">
 					<h2>Timeline</h2>
-					<p>{timeline.Date.iso.substring(0, 10)}</p>
+					<p>{timeline.Date}</p>
 					<hr></hr>
 					<div className="timeline-markers">
 						{timelineItems.map((item) => (

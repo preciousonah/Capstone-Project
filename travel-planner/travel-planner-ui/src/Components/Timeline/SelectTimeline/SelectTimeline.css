@@ -70,3 +70,12 @@
 .timeline-date:hover {
 	font-weight: bold;
 }
+
+.create-timeline-button {
+	color: rgba(85, 38, 0, 0.719);
+	cursor: pointer;
+}
+
+.create-timeline-button:hover {
+	color: rgba(85, 38, 0);
+}

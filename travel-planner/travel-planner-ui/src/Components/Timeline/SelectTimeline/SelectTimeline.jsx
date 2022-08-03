@@ -1,13 +1,18 @@
 import "./SelectTimeline.css";
 import { useState } from "react";
+import axios from "axios";
 
 export default function SelectTimelineBubble({
 	timelines,
 	setTimeline,
 	timelineMarkers,
 	setDisplayedMarkers,
+	mapId,
+	PORT,
+	setPossibleTimelines,
 }) {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [isAddNewDate, setIsAddNewDate] = useState(false);
 
 	const handleFilterMarkersByDate = (event) => {
 		if (event.target.checked) {
@@ -16,6 +21,24 @@ export default function SelectTimelineBubble({
 		} else {
 			setDisplayedMarkers(null);
 		}
+	};
+
+	const createTimeline = async (date) => {
+		// Save the new timeline to the backend
+		const res = await axios.post(
+			`http://localhost:${PORT}/timelines/createNewTimeline`,
+			{
+				mapId: mapId,
+				date: date,
+			}
+		);
+
+		// Add the date to the front-end
+		if (res.status === 200) {
+			setPossibleTimelines((prev) => [...prev, res.data.timeline]);
+		}
+
+		setIsAddNewDate(false);
 	};
 
 	return (
@@ -37,17 +60,30 @@ export default function SelectTimelineBubble({
 			<div className="timeline-dates-list">
 				{timelines.map((timeline) => (
 					<p
-						key={timeline.Date.iso}
+						key={timeline.Date}
 						className="timeline-date"
 						onClick={() => {
 							setTimeline(timeline);
 							setIsExpanded(false);
 						}}
 					>
-						~ {timeline.Date.iso.substring(0, 10)}
+						~ {timeline.Date}
 					</p>
 				))}
 			</div>
+			<p
+				className="create-timeline-button"
+				onClick={() => setIsAddNewDate(true)}
+			>
+				Add another date.
+			</p>
+			{isAddNewDate && (
+				<input
+					type="date"
+					placeholder="yyyy/mm/dd"
+					onChange={(event) => createTimeline(event.currentTarget.value)}
+				/>
+			)}
 		</div>
 	);
 }
