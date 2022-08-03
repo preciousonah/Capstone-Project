@@ -9,6 +9,7 @@ export default function Timeline(props) {
 	const [possibleTimelines, setPossibleTimelines] = useState(null);
 	const [timeline, setTimeline] = useState(null);
 	const [timelineItems, setTimelineItems] = useState(null);
+	const [timelineMarkers, setTimelineMarkers] = useState(null);
 
 	useEffect(() => {
 		if (timeline) {
@@ -20,6 +21,9 @@ export default function Timeline(props) {
 					}
 				);
 				setTimelineItems(res.data.timelineItems);
+
+				// get all the markers associated with those items
+				setTimelineMarkers(res.data.markers);
 			};
 
 			fetchTimeline();
@@ -49,6 +53,8 @@ export default function Timeline(props) {
 			<SelectTimelineBubble
 				timelines={possibleTimelines}
 				setTimeline={setTimeline}
+				timelineMarkers={timelineMarkers}
+				setDisplayedMarkers={props.setMarkers}
 			/>
 			{timelineItems && (
 				<div className="timeline-container">

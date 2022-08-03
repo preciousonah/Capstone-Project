@@ -5,25 +5,24 @@ const Parse = require("parse/node");
 router.use(bodyParser.json());
 
 router.post("/getAssociatedTimelines", async (req, res) => {
-	const mapId = req.body.mapId
+	const mapId = req.body.mapId;
 
 	const Maps = Parse.Object.extend("Maps");
 
 	try {
 		const mapPointer = new Maps().set("objectId", mapId);
 
-		let query = new Parse.Query("Timelines")
-		query.equalTo("Map", mapPointer)
-		const timelines = await query.find()
+		let query = new Parse.Query("Timelines");
+		query.equalTo("Map", mapPointer);
+		const timelines = await query.find();
 
-		res.status(200).send({ timelines: timelines })
+		res.status(200).send({ timelines: timelines });
 		// then on the front end, create a dropdown for this. The user will open up the selected timeline. Which are by date
 		// need to add button for user to create timeline
+	} catch (error) {
+		res.status(400).send({ message: error, type: "Danger" });
 	}
-	catch (error ){
-		res.status(400).send({message: error, type: "Danger"})
-	}
-})
+});
 
 router.post("/getTimelineDetails", async (req, res) => {
 	// query for all timelines of that map (for now just display the first one found)
@@ -40,6 +39,25 @@ router.post("/getTimelineDetails", async (req, res) => {
 		query.equalTo("Timeline", timelineResult);
 		let timelineItems = await query.find();
 
+		// get all the markers associated with these timeline items
+		let alreadyQueriedIds = []
+		let markers = [];
+		let markerId;
+
+		for (item of timelineItems) {
+			query = new Parse.Query("Markers");
+
+			markerId = item.get("Marker").id
+			if (alreadyQueriedIds.includes(markerId)) {
+				continue
+			}
+
+			alreadyQueriedIds.push(markerId)
+			query.equalTo("objectId", markerId);
+
+			markers.push(await query.first());
+		}
+
 		// sort the timeline items by start time.
 		timelineItems.sort((a, b) => {
 			if (a.toJSON().StartTime.hour < b.toJSON().StartTime.hour) {
@@ -55,9 +73,11 @@ router.post("/getTimelineDetails", async (req, res) => {
 			}
 		});
 
-		res
-			.status(200)
-			.send({ timeline: timelineResult, timelineItems: timelineItems });
+		res.status(200).send({
+			timeline: timelineResult,
+			timelineItems: timelineItems,
+			markers: markers,
+		});
 	} catch (error) {
 		res.status(400).send({ message: error, type: "Danger" });
 	}

@@ -12,12 +12,13 @@ export default function Maps({
 	setWalkingResults,
 	directionMarkers,
 	setDirectionMarkers,
+	displayedMarkers,
+	setUpdate,
 }) {
 	const ref = useRef(null);
 	const [map, setMap] = useState();
-	const [markers, setMarkers] = useState(null);
 	const [address, setAddress] = useState("");
-	const [update, setUpdate] = useState(false);
+	const [allMapMarkers, setAllMapMarkers] = useState([]);
 	const [directionsRenderer, setDirectionsRenderer] = useState(
 		new google.maps.DirectionsRenderer()
 	);
@@ -69,26 +70,6 @@ export default function Maps({
 			}
 		}, [directionsMode]);
 
-		// get the markers
-		useEffect(() => {
-			const fetchMarkers = async () => {
-				try {
-					const res = await axios.post(
-						`http://localhost:${PORT}/maps/getMarkers`,
-						{
-							mapId: trip.objectId,
-						}
-					);
-					setMarkers(res.data.markers);
-					setUpdate(false);
-				} catch (error) {
-					console.log("Error fetching markers in UI: ", error);
-				}
-			};
-
-			fetchMarkers();
-		}, [update]);
-
 		useEffect(() => {
 			// This section displays the directions.
 			if (directionMarkers.length == 2) {
@@ -133,14 +114,37 @@ export default function Maps({
 			}
 		}, [directionMarkers]);
 
+		useEffect(() => {
+			// Update what makers are shown
+
+			if (displayedMarkers) {
+				// if the current markers to be displayed matches
+				allMapMarkers.forEach((marker) => {
+					for (let i = 0; i < displayedMarkers.length; i++) {
+						if (marker.objectId === displayedMarkers[i].objectId) {
+							marker.setMap(map);
+							break;
+						} else if (marker.map) {
+							marker.setMap(null);
+						}
+					}
+				});
+			} else if (allMapMarkers.length > 0) {
+				// this means the markers have already been fetched and no filters are set.
+				allMapMarkers.forEach((marker) => {
+					marker.setMap(map);
+				});
+			}
+		}, [displayedMarkers]);
+
 		return (
 			<div
 				id="displayed-map"
 				ref={ref}
 				style={{ flexGrow: "1", height: "100%" }}
 			>
-				{markers &&
-					markers.map((marker) => (
+				{displayedMarkers &&
+					displayedMarkers.map((marker) => (
 						<Marker
 							position={{
 								lat: marker.Location.latitude,
@@ -158,6 +162,7 @@ export default function Maps({
 							directionsMode={directionsMode}
 							directionMarkers={directionMarkers}
 							setDirectionMarkers={setDirectionMarkers}
+							setAllMapMarkers={setAllMapMarkers}
 						/>
 					))}
 			</div>

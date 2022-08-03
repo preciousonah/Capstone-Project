@@ -1,8 +1,22 @@
 import "./SelectTimeline.css";
 import { useState } from "react";
 
-export default function SelectTimelineBubble({ timelines, setTimeline }) {
+export default function SelectTimelineBubble({
+	timelines,
+	setTimeline,
+	timelineMarkers,
+	setDisplayedMarkers,
+}) {
 	const [isExpanded, setIsExpanded] = useState(false);
+
+	const handleFilterMarkersByDate = (event) => {
+		if (event.target.checked) {
+			// only display the markers on the timeline on the map
+			setDisplayedMarkers(timelineMarkers);
+		} else {
+			setDisplayedMarkers(null);
+		}
+	};
 
 	return (
 		<div
@@ -16,6 +30,7 @@ export default function SelectTimelineBubble({ timelines, setTimeline }) {
 					type="checkbox"
 					id="filter-markers-checkbox"
 					name="filter-markers-checkbox"
+					onClick={(event) => handleFilterMarkersByDate(event)}
 				/>
 				<label for="filter-markers-checkbox">Filter map by date?</label>
 			</div>
@@ -24,7 +39,10 @@ export default function SelectTimelineBubble({ timelines, setTimeline }) {
 					<p
 						key={timeline.Date.iso}
 						className="timeline-date"
-						onClick={() => setTimeline(timeline)}
+						onClick={() => {
+							setTimeline(timeline);
+							setIsExpanded(false);
+						}}
 					>
 						~ {timeline.Date.iso.substring(0, 10)}
 					</p>
