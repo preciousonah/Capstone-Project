@@ -101,13 +101,23 @@ export default function Marker(props) {
 		};
 
 		const createTimelineItem = async (markerId) => {
-			axios.post(`http://localhost:${props.PORT}/timelines/createEvent`, {
-				markerId: markerId,
-			});
+			if (props.timeline) {
+				const res = await axios.post(
+					`http://localhost:${props.PORT}/timelines/createEvent`,
+					{
+						markerId: markerId,
+						timelineId: props.timeline.objectId,
+					}
+				);
+
+				if (res.status === 200) {
+					props.setTimelineItems((prev) => [...prev, res.data.item]);
+				}
+			}
 		};
 
 		createMarker();
-	}, []);
+	}, [props.timeline]);
 
 	return null;
 }

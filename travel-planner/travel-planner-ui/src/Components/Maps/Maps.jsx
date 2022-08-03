@@ -14,6 +14,8 @@ export default function Maps({
 	setDirectionMarkers,
 	displayedMarkers,
 	setUpdate,
+	setTimelineItems,
+	timeline,
 }) {
 	const ref = useRef(null);
 	const [map, setMap] = useState();
@@ -163,6 +165,8 @@ export default function Maps({
 							directionMarkers={directionMarkers}
 							setDirectionMarkers={setDirectionMarkers}
 							setAllMapMarkers={setAllMapMarkers}
+							setTimelineItems={setTimelineItems}
+							timeline={timeline}
 						/>
 					))}
 			</div>

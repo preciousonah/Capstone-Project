@@ -44,9 +44,7 @@ router.post("/createNewTimeline", async (req, res) => {
 });
 
 router.post("/getTimelineDetails", async (req, res) => {
-	// query for all timelines of that map (for now just display the first one found)
-	// then parse information from that
-
+	// query for all timelines of that map
 	const timelineId = req.body.timelineId;
 
 	try {
@@ -92,6 +90,10 @@ router.post("/getTimelineDetails", async (req, res) => {
 			}
 		});
 
+		if (timelineItems.length === 0) {
+			timelineItems = [];
+		}
+
 		res.status(200).send({
 			timeline: timelineResult,
 			timelineItems: timelineItems,
@@ -104,7 +106,7 @@ router.post("/getTimelineDetails", async (req, res) => {
 
 router.post("/createEvent", async (req, res) => {
 	const markerId = req.body.markerId;
-	const timelineId = "FKPlJ7tNTk"; // will need to replace this with an actual getter function later
+	const timelineId = req.body.timelineId;
 
 	const Timelines = Parse.Object.extend("Timelines");
 	const TimelineItems = Parse.Object.extend("TimelineItems");
@@ -124,7 +126,7 @@ router.post("/createEvent", async (req, res) => {
 		newEvent.set("Name", marker.get("Name"));
 
 		newEvent.save().then(() => {
-			res.status(200).send({ message: "Success!" });
+			res.status(200).send({ message: "Success!", item: newEvent });
 		});
 	} catch (error) {
 		res.status(400).send({ message: error });
@@ -143,7 +145,7 @@ router.post("/saveEvent", async (req, res) => {
 		item.set("EndTime", endTime);
 
 		item.save().then(() => {
-			res.status(200).send({ message: "Success!" });
+			res.status(200).send({ message: "Success!", item: item });
 		});
 	} catch (error) {
 		res.status(400).send({ message: error, type: "Error" });

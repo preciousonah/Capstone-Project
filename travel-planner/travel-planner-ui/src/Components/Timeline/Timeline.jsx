@@ -7,20 +7,18 @@ import axios from "axios";
 
 export default function Timeline(props) {
 	const [possibleTimelines, setPossibleTimelines] = useState(null);
-	const [timeline, setTimeline] = useState(null);
-	const [timelineItems, setTimelineItems] = useState(null);
 	const [timelineMarkers, setTimelineMarkers] = useState(null);
 
 	useEffect(() => {
-		if (timeline) {
+		if (props.timeline) {
 			const fetchTimeline = async () => {
 				const res = await axios.post(
 					`http://localhost:${props.PORT}/timelines/getTimelineDetails`,
 					{
-						timelineId: timeline.objectId,
+						timelineId: props.timeline.objectId,
 					}
 				);
-				setTimelineItems(res.data.timelineItems);
+				props.setTimelineItems(res.data.timelineItems);
 
 				// get all the markers associated with those items
 				setTimelineMarkers(res.data.markers);
@@ -28,7 +26,7 @@ export default function Timeline(props) {
 
 			fetchTimeline();
 		}
-	}, [timeline]);
+	}, [props.timeline]);
 
 	useEffect(() => {
 		const fetchAssociatedTimelines = async () => {
@@ -52,20 +50,20 @@ export default function Timeline(props) {
 		<>
 			<SelectTimelineBubble
 				timelines={possibleTimelines}
-				setTimeline={setTimeline}
+				setTimeline={props.setTimeline}
 				timelineMarkers={timelineMarkers}
 				setDisplayedMarkers={props.setMarkers}
 				mapId={props.mapId}
 				PORT={props.PORT}
 				setPossibleTimelines={setPossibleTimelines}
 			/>
-			{timelineItems && (
+			{props.timelineItems && (
 				<div className="timeline-container">
 					<h2>Timeline</h2>
-					<p>{timeline.Date}</p>
+					<p>{props.timeline.Date}</p>
 					<hr></hr>
 					<div className="timeline-markers">
-						{timelineItems.map((item) => (
+						{props.timelineItems.map((item) => (
 							<TimelineItem
 								name={item.Name}
 								startTime={item.StartTime}

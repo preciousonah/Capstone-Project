@@ -44,7 +44,10 @@ export default function SelectTimelineBubble({
 	return (
 		<div
 			className="select-timeline-bubble"
-			style={{ height: isExpanded ? "auto" : "6.4vh" }}
+			style={{
+				height: isExpanded ? "auto" : "6.4vh",
+				overflowY: isExpanded ? "scroll" : "hidden",
+			}}
 			onDoubleClick={() => setIsExpanded(isExpanded ? false : true)}
 		>
 			<p>Select a date to display your timeline.</p>
@@ -55,7 +58,7 @@ export default function SelectTimelineBubble({
 					name="filter-markers-checkbox"
 					onClick={(event) => handleFilterMarkersByDate(event)}
 				/>
-				<label for="filter-markers-checkbox">Filter map by date?</label>
+				<label htmlFor="filter-markers-checkbox">Filter map by date?</label>
 			</div>
 			<div className="timeline-dates-list">
 				{timelines.map((timeline) => (

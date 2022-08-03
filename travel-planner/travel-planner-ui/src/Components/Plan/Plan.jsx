@@ -24,6 +24,8 @@ export default function Plan(props) {
 	const { sessionToken } = useContext(UserContext);
 	const [markers, setMarkers] = useState(null);
 	const [updateMarkers, setUpdateMarkers] = useState(false);
+	const [timelineItems, setTimelineItems] = useState(null);
+	const [timeline, setTimeline] = useState(null);
 
 	// get the markers
 	useEffect(() => {
@@ -166,6 +168,8 @@ export default function Plan(props) {
 									setWalkingResults={setWalkingResults}
 									displayedMarkers={markers}
 									setUpdate={setUpdateMarkers}
+									setTimelineItems={setTimelineItems}
+									timeline={timeline}
 								/>
 							</div>
 						</Wrapper>
@@ -214,6 +218,10 @@ export default function Plan(props) {
 							mapId={tripDetails.objectId}
 							PORT={props.PORT}
 							setMarkers={setMarkers}
+							timelineItems={timelineItems}
+							setTimelineItems={setTimelineItems}
+							timeline={timeline}
+							setTimeline={setTimeline}
 						/>
 					</div>
 					<div className="directions-content"></div>
