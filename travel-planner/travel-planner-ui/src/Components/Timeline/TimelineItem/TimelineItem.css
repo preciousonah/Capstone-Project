@@ -9,6 +9,7 @@
 
 .timeline-item-title {
 	margin: 10px 0px;
+	flex: 8;
 }
 
 .timeline-item-duration-container {
@@ -39,4 +40,21 @@
 .timeline-item-time-container p {
 	color: inherit;
 	font-size: 14px;
+}
+
+.timeline-item-top {
+	display: flex;
+}
+
+.timeline-item-top .fa-trash-can {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	color: rgba(85, 38, 0, 0.308);
+	cursor: pointer;
+}
+
+.timeline-item-top .fa-trash-can:hover {
+	color: rgba(85, 38, 0);
 }

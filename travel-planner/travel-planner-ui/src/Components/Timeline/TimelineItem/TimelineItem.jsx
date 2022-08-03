@@ -43,12 +43,17 @@ export default function TimelineItem(props) {
 		return String(hour) + " hour(s) " + String(min) + " minutes";
 	};
 
-	// 24 hours = 1440 minutes
-
 	return (
 		<Draggable axis="y" bounds="parent">
+			{/* 24 hours = 1440 minutes */}
 			<div className="timeline-item" style={{ flex: (duration / 1440) * 2 }}>
-				<h3 className="timeline-item-title">{props.name}</h3>
+				<div className="timeline-item-top">
+					<h3 className="timeline-item-title">{props.name}</h3>
+					<i
+						className="fa-solid fa-trash-can"
+						onClick={() => props.deleteItem(props.objectId)}
+					></i>
+				</div>
 				<div className="timeline-item-duration-container">
 					<p className="timeline-item-duration">{formatMinutes(duration)}</p>
 					<div className="timeline-item-time-container">

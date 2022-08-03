@@ -26,6 +26,7 @@ export default function Plan(props) {
 	const [updateMarkers, setUpdateMarkers] = useState(false);
 	const [timelineItems, setTimelineItems] = useState(null);
 	const [timeline, setTimeline] = useState(null);
+	const [timelineMarkers, setTimelineMarkers] = useState(null);
 
 	// get the markers
 	useEffect(() => {
@@ -170,6 +171,7 @@ export default function Plan(props) {
 									setUpdate={setUpdateMarkers}
 									setTimelineItems={setTimelineItems}
 									timeline={timeline}
+									setTimelineMarkers={setTimelineMarkers}
 								/>
 							</div>
 						</Wrapper>
@@ -222,6 +224,8 @@ export default function Plan(props) {
 							setTimelineItems={setTimelineItems}
 							timeline={timeline}
 							setTimeline={setTimeline}
+							timelineMarkers={timelineMarkers}
+							setTimelineMarkers={setTimelineMarkers}
 						/>
 					</div>
 					<div className="directions-content"></div>

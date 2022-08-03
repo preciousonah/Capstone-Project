@@ -120,13 +120,16 @@ router.post("/createEvent", async (req, res) => {
 		newEvent.set("Marker", markerPointer);
 		newEvent.set("Timeline", timeline);
 
+		// get the marker associated with the new event
 		let query = new Parse.Query("Markers");
 		query.equalTo("objectId", markerId);
 		const marker = await query.first();
-		newEvent.set("Name", marker.get("Name"));
+		newEvent.set("Name", marker.get("Name")); // update name!!
 
 		newEvent.save().then(() => {
-			res.status(200).send({ message: "Success!", item: newEvent });
+			res
+				.status(200)
+				.send({ message: "Success!", item: newEvent, marker: marker });
 		});
 	} catch (error) {
 		res.status(400).send({ message: error });
@@ -152,6 +155,27 @@ router.post("/saveEvent", async (req, res) => {
 	}
 });
 
-router.post("/saveTimeline", async (req, res) => {});
+router.post("/deleteEvent", async (req, res) => {
+	const itemId = req.body.itemId;
+
+	let query = new Parse.Query("TimelineItems");
+	query.equalTo("objectId", itemId);
+	const itemToDelete = await query.first();
+	if (itemToDelete) {
+		itemToDelete
+			.destroy()
+			.then(() => {
+				res
+					.status(200)
+					.send({ message: "Successfully destroyed timeline item." });
+			})
+			.catch((error) => {
+				res.status(400).send({
+					message: "Encountered error while destorying timeline item.",
+					error: error,
+				});
+			});
+	}
+});
 
 module.exports = router;

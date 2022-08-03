@@ -7,7 +7,25 @@ import axios from "axios";
 
 export default function Timeline(props) {
 	const [possibleTimelines, setPossibleTimelines] = useState(null);
-	const [timelineMarkers, setTimelineMarkers] = useState(null);
+
+	const deleteItem = async (itemToDeleteId) => {
+		//remove on backend
+		const res = await axios.post(
+			`http://localhost:${props.PORT}/timelines/deleteEvent`,
+			{
+				itemId: itemToDeleteId,
+			}
+		);
+
+		// remove on front-end
+		if (res.status === 200) {
+			props.setTimelineItems((prev) =>
+				prev.filter((item) => {
+					return item.objectId !== itemToDeleteId;
+				})
+			);
+		}
+	};
 
 	useEffect(() => {
 		if (props.timeline) {
@@ -21,7 +39,7 @@ export default function Timeline(props) {
 				props.setTimelineItems(res.data.timelineItems);
 
 				// get all the markers associated with those items
-				setTimelineMarkers(res.data.markers);
+				props.setTimelineMarkers(res.data.markers);
 			};
 
 			fetchTimeline();
@@ -51,7 +69,7 @@ export default function Timeline(props) {
 			<SelectTimelineBubble
 				timelines={possibleTimelines}
 				setTimeline={props.setTimeline}
-				timelineMarkers={timelineMarkers}
+				timelineMarkers={props.timelineMarkers}
 				setDisplayedMarkers={props.setMarkers}
 				mapId={props.mapId}
 				PORT={props.PORT}
@@ -71,6 +89,7 @@ export default function Timeline(props) {
 								objectId={item.objectId}
 								key={item.objectId}
 								PORT={props.PORT}
+								deleteItem={deleteItem}
 							/>
 						))}
 					</div>

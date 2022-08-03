@@ -112,6 +112,7 @@ export default function Marker(props) {
 
 				if (res.status === 200) {
 					props.setTimelineItems((prev) => [...prev, res.data.item]);
+					props.setTimelineMarkers((prev) => [...prev, res.data.marker]);
 				}
 			}
 		};

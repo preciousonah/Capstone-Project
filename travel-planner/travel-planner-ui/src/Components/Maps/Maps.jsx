@@ -16,6 +16,7 @@ export default function Maps({
 	setUpdate,
 	setTimelineItems,
 	timeline,
+	setTimelineMarkers,
 }) {
 	const ref = useRef(null);
 	const [map, setMap] = useState();
@@ -167,6 +168,7 @@ export default function Maps({
 							setAllMapMarkers={setAllMapMarkers}
 							setTimelineItems={setTimelineItems}
 							timeline={timeline}
+							setTimelineMarkers={setTimelineMarkers}
 						/>
 					))}
 			</div>

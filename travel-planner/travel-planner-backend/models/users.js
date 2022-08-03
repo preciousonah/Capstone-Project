@@ -1,6 +1,5 @@
 const Parse = require("parse/node");
 
-
 class Users {
 	static async logIn(username, password) {
 		let user = await Parse.User.logIn(username, password);
@@ -16,8 +15,6 @@ class Users {
 
 		query.first({ useMasterKey: true }).then(function (user) {
 			if (user) {
-				console.log(user);
-
 				/* Remove the session from the table. */
 				user
 					.destroy({ useMasterKey: true })
