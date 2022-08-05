@@ -1,6 +1,7 @@
 import "./SelectTimeline.css";
 import { useState } from "react";
 import axios from "axios";
+import { PORT } from "./../../App/App";
 
 export default function SelectTimelineBubble({
 	timelines,
@@ -8,7 +9,6 @@ export default function SelectTimelineBubble({
 	timelineMarkers,
 	setDisplayedMarkers,
 	mapId,
-	PORT,
 	setPossibleTimelines,
 }) {
 	const [isExpanded, setIsExpanded] = useState(false);

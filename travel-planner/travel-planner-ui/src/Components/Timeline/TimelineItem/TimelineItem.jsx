@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
 import Draggable from "react-draggable";
+import { PORT } from "./../../App/App";
 
 export default function TimelineItem(props) {
 	const [duration, setDuration] = useState(5);
@@ -15,7 +16,7 @@ export default function TimelineItem(props) {
 
 	const saveTimesInDatabase = () => {
 		updateDuration();
-		axios.post(`http://localhost:${props.PORT}/timelines/saveEvent`, {
+		axios.post(`http://localhost:${PORT}/timelines/saveEvent`, {
 			startTime: startTime,
 			endTime: endTime,
 			itemId: props.objectId,

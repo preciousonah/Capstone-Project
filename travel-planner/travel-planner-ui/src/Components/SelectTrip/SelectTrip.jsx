@@ -3,9 +3,10 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../../UserContext";
 import Dropdown from "react-bootstrap/Dropdown";
-import CustomToggle from "./../Dropdown/CustomToggle"
-import CustomMenu from "./../Dropdown/CustomMenu"
+import CustomToggle from "./../Dropdown/CustomToggle";
+import CustomMenu from "./../Dropdown/CustomMenu";
 import Loading from "../Loading/Loading";
+import { PORT } from "./../App/App";
 
 function CreateNewTrip(props) {
 	const [newTripTitle, setNewTripTitle] = useState(props.tripTitle);
@@ -17,7 +18,7 @@ function CreateNewTrip(props) {
 		// Create a new trip
 		// Then send that newly create trip back to Plans through setFinalTripDetails
 
-		const res = await axios.post(`http://localhost:${props.PORT}/maps/newMap`, {
+		const res = await axios.post(`http://localhost:${PORT}/maps/newMap`, {
 			title: newTripTitle,
 			center: newTripCenter,
 			sessionToken: props.sessionToken,
@@ -67,12 +68,9 @@ export default function SelectTripPage(props) {
 
 	// Get the existing trips by querying
 	useEffect(async () => {
-		const res = await axios.post(
-			`http://localhost:${props.PORT}/maps/getUserMaps`,
-			{
-				sessionToken: sessionToken,
-			}
-		);
+		const res = await axios.post(`http://localhost:${PORT}/maps/getUserMaps`, {
+			sessionToken: sessionToken,
+		});
 
 		setTrips(res.data);
 	}, []);
@@ -115,7 +113,6 @@ export default function SelectTripPage(props) {
 				<CreateNewTrip
 					tripTitle={creatingTrip}
 					setFinalTripDetails={props.setTripDetails}
-					PORT={props.PORT}
 					sessionToken={sessionToken}
 				/>
 			)}
