@@ -5,6 +5,7 @@ import Navbar from "../Navbar/Navbar";
 import Plan from "../Plan/Plan";
 import Login from "../Login/Login";
 import SignUp from "../SignUp/SignUp";
+import Overview from "../Overview/Overview";
 
 import { UserContext } from "../../UserContext";
 
@@ -28,7 +29,7 @@ export default function App() {
 							</>
 						) : (
 							<>
-								<Route path="/" element={<h1>Home!</h1>} />
+								<Route path="/" element={<Overview />} />
 								<Route path="/plan" element={<Plan PORT={PORT} />} />
 							</>
 						)}

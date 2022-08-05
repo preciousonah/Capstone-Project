@@ -2,6 +2,7 @@ import "./Marker.css";
 import { useEffect } from "react";
 import { render } from "react-dom";
 import Content from "./Content";
+import axios from "axios";
 
 export default function Marker(props) {
 	class InfoWindow extends google.maps.OverlayView {
@@ -76,20 +77,48 @@ export default function Marker(props) {
 	}
 
 	useEffect(() => {
-		const marker = new google.maps.Marker(props);
+		const createMarker = async () => {
+			const marker = new google.maps.Marker(props);
 
-		const popup = new InfoWindow(props.position);
-		popup.setMap(props.map);
-		popup.onRemove();
+			props.setAllMapMarkers((prev) => [...prev, marker]);
 
-		marker.addListener("click", () => {
-			popup.onAdd();
-		});
+			const popup = new InfoWindow(props.position);
+			popup.setMap(props.map);
+			popup.onRemove();
 
-		return () => {
-			marker.setMap(null);
+			marker.addListener("click", () => {
+				popup.onAdd();
+			});
+
+			marker.addListener("dblclick", () => {
+				// add to timeline on double click
+				createTimelineItem(props.objectId);
+			});
+
+			return () => {
+				marker.setMap(null);
+			};
 		};
-	}, []);
+
+		const createTimelineItem = async (markerId) => {
+			if (props.timeline) {
+				const res = await axios.post(
+					`http://localhost:${props.PORT}/timelines/createEvent`,
+					{
+						markerId: markerId,
+						timelineId: props.timeline.objectId,
+					}
+				);
+
+				if (res.status === 200) {
+					props.setTimelineItems((prev) => [...prev, res.data.item]);
+					props.setTimelineMarkers((prev) => [...prev, res.data.marker]);
+				}
+			}
+		};
+
+		createMarker();
+	}, [props.timeline]);
 
 	return null;
 }

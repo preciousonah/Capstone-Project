@@ -1,12 +1,12 @@
 import "./Plan.css";
 import Notes from "../Notes/Notes";
+import Timeline from "../Timeline/Timeline";
 import Maps from "../Maps/Maps";
 import SelectTripPage from "../SelectTrip/SelectTrip";
 import SelectDirections from "../SelectDirections/SelectDirections";
 import axios from "axios";
 import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../UserContext";
-
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
 const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
@@ -22,6 +22,33 @@ export default function Plan(props) {
 	const [directionsDestination, setDirectionsDestination] = useState("");
 	const [directionMarkers, setDirectionMarkers] = useState([]);
 	const { sessionToken } = useContext(UserContext);
+	const [markers, setMarkers] = useState(null);
+	const [updateMarkers, setUpdateMarkers] = useState(false);
+	const [timelineItems, setTimelineItems] = useState(null);
+	const [timeline, setTimeline] = useState(null);
+	const [timelineMarkers, setTimelineMarkers] = useState(null);
+
+	// get the markers
+	useEffect(() => {
+		if (tripDetails) {
+			const fetchMarkers = async () => {
+				try {
+					const res = await axios.post(
+						`http://localhost:${props.PORT}/maps/getMarkers`,
+						{
+							mapId: tripDetails.objectId,
+						}
+					);
+					setMarkers(res.data.markers);
+					setUpdateMarkers(false);
+				} catch (error) {
+					console.log("Error fetching markers in UI: ", error);
+				}
+			};
+
+			fetchMarkers();
+		}
+	}, [tripDetails, updateMarkers]);
 
 	useEffect(() => {
 		const fetchRecommendations = async () => {
@@ -140,6 +167,11 @@ export default function Plan(props) {
 									setDirectionMarkers={setDirectionMarkers}
 									setDrivingResults={setDrivingResults}
 									setWalkingResults={setWalkingResults}
+									displayedMarkers={markers}
+									setUpdate={setUpdateMarkers}
+									setTimelineItems={setTimelineItems}
+									timeline={timeline}
+									setTimelineMarkers={setTimelineMarkers}
 								/>
 							</div>
 						</Wrapper>
@@ -183,7 +215,18 @@ export default function Plan(props) {
 					</div>
 					<div className="right-app">
 						<h1 className="map-title">{tripDetails.MapName}</h1>
-						<Notes curNote={curNote} PORT={props.PORT} />
+						{/* <Notes curNote={curNote} PORT={props.PORT} /> */}
+						<Timeline
+							mapId={tripDetails.objectId}
+							PORT={props.PORT}
+							setMarkers={setMarkers}
+							timelineItems={timelineItems}
+							setTimelineItems={setTimelineItems}
+							timeline={timeline}
+							setTimeline={setTimeline}
+							timelineMarkers={timelineMarkers}
+							setTimelineMarkers={setTimelineMarkers}
+						/>
 					</div>
 					<div className="directions-content"></div>
 				</div>
