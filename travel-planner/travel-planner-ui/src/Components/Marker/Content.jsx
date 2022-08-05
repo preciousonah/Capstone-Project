@@ -1,6 +1,7 @@
 import "./Marker.css";
 import { useState } from "react";
 import axios from "axios";
+import { PORT } from "./../App/App";
 
 // create delete marker button?
 // allow us to edit note content and also expand note content on the right side.
@@ -11,7 +12,6 @@ export default function Content({
 	title,
 	address,
 	noteContent,
-	PORT,
 	setCurNote,
 }) {
 	// Create the content displayed when user opens the infoWindow

@@ -207,8 +207,6 @@ router.post("/updateNote", async (req, res) => {
 });
 
 router.post("/getAddress", async (req, res) => {
-	// For some reason the model is not working...
-
 	// Using this api: https://positionstack.com/
 
 	const API_KEY = process.env.POSITION_STACK_API_KEY;

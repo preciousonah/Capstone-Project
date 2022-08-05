@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { render } from "react-dom";
 import Content from "./Content";
 import axios from "axios";
+import { PORT } from "./../App/App";
 
 export default function Marker(props) {
 	class InfoWindow extends google.maps.OverlayView {
@@ -19,7 +20,6 @@ export default function Marker(props) {
 					title={props.title}
 					address={props.address}
 					noteContent={props.content}
-					PORT={props.PORT}
 					setCurNote={props.setCurNote}
 				/>
 			);
@@ -78,7 +78,9 @@ export default function Marker(props) {
 
 	useEffect(() => {
 		const createMarker = async () => {
-			const marker = new google.maps.Marker(props);
+			// Problem! Cannot remove this since marker cannot be a useState
+			// If marker is a useState, listeners cannot be added to it
+			const marker = new google.maps.Marker(props); // create this separately, save this marker. Then in this useEffect, just create the listener
 
 			props.setAllMapMarkers((prev) => [...prev, marker]);
 
@@ -103,7 +105,7 @@ export default function Marker(props) {
 		const createTimelineItem = async (markerId) => {
 			if (props.timeline) {
 				const res = await axios.post(
-					`http://localhost:${props.PORT}/timelines/createEvent`,
+					`http://localhost:${PORT}/timelines/createEvent`,
 					{
 						markerId: markerId,
 						timelineId: props.timeline.objectId,

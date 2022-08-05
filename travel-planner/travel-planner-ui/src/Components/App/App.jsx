@@ -6,10 +6,9 @@ import Plan from "../Plan/Plan";
 import Login from "../Login/Login";
 import SignUp from "../SignUp/SignUp";
 import Overview from "../Overview/Overview";
-
 import { UserContext } from "../../UserContext";
 
-const PORT = 3001;
+export const PORT = 3001;
 
 export default function App() {
 	const { sessionToken } = React.useContext(UserContext);
@@ -39,5 +38,3 @@ export default function App() {
 		</div>
 	);
 }
-
-// Home is the log in page unless you're logged in

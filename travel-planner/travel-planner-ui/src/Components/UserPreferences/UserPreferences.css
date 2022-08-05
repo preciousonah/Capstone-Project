@@ -1,10 +1,90 @@
-.user-preferences-page {
-  background-color: bisque;
-  border-radius: 20px;
-  padding: 1vh 1.2vw;
-  letter-spacing: 6px;
+#user-preferences-page {
+	background-color: bisque;
+	border-radius: 20px;
+	padding: 1vh 6vw;
 }
 
-.user-preferences-page h1 {
-  text-shadow: 3px 3px rgba(80, 56, 26, 0.342);
+#user-preferences-page h1 {
+	text-shadow: 3px 3px rgba(80, 56, 26, 0.342);
+	letter-spacing: 6px;
+}
+
+.preferences-body {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	padding-bottom: 2vh;
+}
+
+.preferences-percentages {
+	flex: 2;
+}
+
+.preferences-weights {
+	flex: 3;
+}
+
+.save-preferences-button {
+	margin-top: 2vh;
+	margin-bottom: 4vh;
+	text-overflow: clip;
+	font-size: 24px;
+	letter-spacing: 0.5vw;
+	margin-top: 3vh;
+	border-radius: 20px;
+	width: 20%;
+	font-weight: bold;
+	color: white;
+	cursor: pointer;
+	height: 3vh;
+	border: none;
+	background-size: 300% 100%;
+
+	-o-transition: all 0.7s ease-in-out;
+	-webkit-transition: all 0.7s ease-in-out;
+	transition: all 0.7s ease-in-out;
+
+	background-image: linear-gradient(
+		to right,
+		rgb(255, 249, 168),
+		rgb(223, 168, 120),
+		rgb(223, 168, 120),
+		rgb(255, 219, 122)
+	);
+	box-shadow: 0 4px 15px 0 rgba(85, 38, 0, 0.459);
+}
+
+.save-preferences-button:hover {
+	background-position: 100% 0;
+	-o-transition: all 0.7s ease-in-out;
+	-webkit-transition: all 0.7s ease-in-out;
+	transition: all 0.7s ease-in-out;
+}
+
+#user-preferences-page > span {
+	display: flex;
+	justify-content: center;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+	#user-preferences-page input[type="range"] {
+		overflow-x: hidden;
+		-webkit-appearance: none;
+		background-color: rgba(85, 38, 0, 0.4);
+	}
+
+	#user-preferences-page input[type="range"]::-webkit-slider-runnable-track {
+		height: 10px;
+		-webkit-appearance: none;
+		margin-top: -1px;
+	}
+
+	#user-preferences-page input[type="range"]::-webkit-slider-thumb {
+		width: 10px;
+		-webkit-appearance: none;
+		height: 10px;
+		cursor: pointer;
+		background: rgb(85, 38, 0);
+		border-radius: 20px;
+	}
 }

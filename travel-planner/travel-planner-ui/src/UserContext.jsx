@@ -1,11 +1,10 @@
 import * as React from "react";
 import axios from "axios";
+import { PORT } from "./Components/App/App";
 
 import { CookiesProvider, useCookies } from "react-cookie";
 
 export const UserContext = React.createContext(null);
-
-const PORT = 3001;
 
 export function UserContextProvider({ children }) {
 	const [cookies, setCookie, removeCookie] = useCookies(["sessionToken"]);

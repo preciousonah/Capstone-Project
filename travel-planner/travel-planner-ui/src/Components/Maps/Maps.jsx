@@ -1,12 +1,12 @@
 import "./Maps.css";
 import Marker from "../Marker/Marker";
+import { PORT } from "./../App/App";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 export default function Maps({
 	setCurNote,
 	trip,
-	PORT,
 	directionsMode,
 	setDrivingResults,
 	setWalkingResults,
@@ -160,7 +160,6 @@ export default function Maps({
 							objectId={marker.objectId}
 							address={marker.Address}
 							content={marker.Content}
-							PORT={PORT}
 							setCurNote={setCurNote}
 							directionsMode={directionsMode}
 							directionMarkers={directionMarkers}

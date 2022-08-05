@@ -5,8 +5,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import CustomToggle from "./../Dropdown/CustomToggle";
 import CustomMenu from "./../Dropdown/CustomMenu";
 import DirectionReasonBubble from "./DirectionReasonBubble/DirectionReasonBubble";
+import { PORT } from "./../App/App";
 
-export default function SelectDirections({ PORT, mapId }) {
+export default function SelectDirections({ mapId }) {
 	// get all directions from backend
 	const [directions, setDirections] = useState(null);
 	const [curDirections, setCurDirections] = useState(null);

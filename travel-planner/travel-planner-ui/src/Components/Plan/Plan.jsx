@@ -8,6 +8,7 @@ import axios from "axios";
 import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../UserContext";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import { PORT } from "./../App/App";
 
 const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
 
@@ -15,10 +16,10 @@ export default function Plan(props) {
 	const [tripDetails, setTripDetails] = useState(null);
 	const [directionsMode, setDirectionsMode] = useState(false);
 	const [directionsResults, setDirectionsResults] = useState(null);
-	const [walkingResults, setWalkingResults] = useState(null);
+	const [walkingResults, setWalkingResults] = useState(null); // combine these two directions into one dictionary, then only set the state after finishing (in the maps directions component)
 	const [drivingResults, setDrivingResults] = useState(null);
-	const previousVals = useRef({ walkingResults, drivingResults });
-	const [directionsOrigin, setDirectionsOrigin] = useState("");
+	const previousVals = useRef({ walkingResults, drivingResults }); // delete
+	const [directionsOrigin, setDirectionsOrigin] = useState(""); // combine with directionsDestination
 	const [directionsDestination, setDirectionsDestination] = useState("");
 	const [directionMarkers, setDirectionMarkers] = useState([]);
 	const { sessionToken } = useContext(UserContext);
@@ -26,7 +27,7 @@ export default function Plan(props) {
 	const [updateMarkers, setUpdateMarkers] = useState(false);
 	const [timelineItems, setTimelineItems] = useState(null);
 	const [timeline, setTimeline] = useState(null);
-	const [timelineMarkers, setTimelineMarkers] = useState(null);
+	const [timelineMarkers, setTimelineMarkers] = useState(null); // combine this with timelineItems.
 
 	// get the markers
 	useEffect(() => {
@@ -34,7 +35,7 @@ export default function Plan(props) {
 			const fetchMarkers = async () => {
 				try {
 					const res = await axios.post(
-						`http://localhost:${props.PORT}/maps/getMarkers`,
+						`http://localhost:${PORT}/maps/getMarkers`,
 						{
 							mapId: tripDetails.objectId,
 						}
@@ -67,7 +68,7 @@ export default function Plan(props) {
 				}
 				if (walkingResults && drivingResults) {
 					const result = await axios.post(
-						`http://localhost:${props.PORT}/recommendations`,
+						`http://localhost:${PORT}/recommendations`,
 						{
 							location: directionMarkers[0],
 							walkingDuration: walkingResults.duration,
@@ -75,8 +76,6 @@ export default function Plan(props) {
 							sessionToken: sessionToken,
 						}
 					);
-
-					console.log("Result: ", result);
 
 					if (result.data.type === "DRIVING") {
 						setDirectionsResults({
@@ -112,7 +111,7 @@ export default function Plan(props) {
 			directions.push(newEle.innerText);
 		});
 
-		axios.post(`http://localhost:${props.PORT}/maps/createMapDirections`, {
+		axios.post(`http://localhost:${PORT}/maps/createMapDirections`, {
 			type: directionsResults.type,
 			duration: directionsResults.result.duration,
 			distance: directionsResults.result.distance,
@@ -151,7 +150,7 @@ export default function Plan(props) {
 	return (
 		<>
 			{!tripDetails ? (
-				<SelectTripPage setTripDetails={setTripDetails} PORT={props.PORT} />
+				<SelectTripPage setTripDetails={setTripDetails} />
 			) : (
 				<div className="plan-page main-page">
 					<div className="left-app">
@@ -160,8 +159,6 @@ export default function Plan(props) {
 								<Maps
 									setCurNote={setCurNote}
 									trip={tripDetails}
-									PORT={props.PORT}
-									setCurNote={setCurNote}
 									directionsMode={directionsMode}
 									directionMarkers={directionMarkers}
 									setDirectionMarkers={setDirectionMarkers}
@@ -211,14 +208,13 @@ export default function Plan(props) {
 								<button onClick={getDirections}>Save directions</button>
 							</div>
 						) : null}
-						<SelectDirections PORT={props.PORT} mapId={tripDetails.objectId} />
+						<SelectDirections mapId={tripDetails.objectId} />
 					</div>
 					<div className="right-app">
 						<h1 className="map-title">{tripDetails.MapName}</h1>
-						{/* <Notes curNote={curNote} PORT={props.PORT} /> */}
+						<Notes curNote={curNote} />
 						<Timeline
 							mapId={tripDetails.objectId}
-							PORT={props.PORT}
 							setMarkers={setMarkers}
 							timelineItems={timelineItems}
 							setTimelineItems={setTimelineItems}
