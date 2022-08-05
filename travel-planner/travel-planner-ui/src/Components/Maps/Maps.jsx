@@ -17,6 +17,10 @@ export default function Maps({
 	setTimelineItems,
 	timeline,
 	setTimelineMarkers,
+	timelineMarkers,
+	isGetTimelineDirections,
+	setIsGetTimelineDirections,
+	setTimelineDirections,
 }) {
 	const ref = useRef(null);
 	const [map, setMap] = useState();
@@ -77,7 +81,6 @@ export default function Maps({
 			// This section displays the directions.
 			if (directionMarkers.length == 2) {
 				var directionsService = new google.maps.DirectionsService();
-				// var directionsRenderer = new google.maps.DirectionsRenderer();
 
 				var request = {
 					origin: directionMarkers[0],
@@ -139,6 +142,49 @@ export default function Maps({
 				});
 			}
 		}, [displayedMarkers]);
+
+		useEffect(() => {
+			if (isGetTimelineDirections) {
+				// get the directions for all the markers and render them on the map
+				let directionsService = new google.maps.DirectionsService();
+				let waypoints = [];
+
+				// get all waypoints (timeline stops)
+				timelineMarkers
+					.slice(1, timelineMarkers.length - 1)
+					.forEach((marker) => {
+						waypoints.push({
+							location: {
+								lat: marker.Location.latitude,
+								lng: marker.Location.longitude,
+							},
+							stopover: true,
+						});
+					});
+
+				const request = {
+					origin: {
+						lat: timelineMarkers[0].Location.latitude,
+						lng: timelineMarkers[0].Location.longitude,
+					},
+					destination: {
+						lat: timelineMarkers[timelineMarkers.length - 1].Location.latitude,
+						lng: timelineMarkers[timelineMarkers.length - 1].Location.longitude,
+					},
+					travelMode: "DRIVING",
+					waypoints: waypoints,
+				};
+
+				directionsService.route(request, (result, status) => {
+					if (status === "OK") {
+						directionsRenderer.setDirections(result);
+						directionsRenderer.setMap(map);
+						setTimelineDirections(result.routes[0]);
+					}
+				});
+				setIsGetTimelineDirections(false);
+			}
+		}, [isGetTimelineDirections]);
 
 		return (
 			<div

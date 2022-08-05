@@ -2,6 +2,7 @@ import "./Timeline.css";
 import TimelineItem from "./TimelineItem/TimelineItem";
 import Loading from "../Loading/Loading";
 import SelectTimelineBubble from "./SelectTimeline/SelectTimeline";
+import Directions from "./Directions/Directions";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { PORT } from "./../App/App";
@@ -65,6 +66,8 @@ export default function Timeline(props) {
 		return <Loading />;
 	}
 
+	let i = -1; // use this to increment the index of directions array when rendering.
+
 	return (
 		<>
 			<SelectTimelineBubble
@@ -81,17 +84,32 @@ export default function Timeline(props) {
 					<p>{props.timeline.Date}</p>
 					<hr></hr>
 					<div className="timeline-markers">
-						{props.timelineItems.map((item) => (
-							<TimelineItem
-								name={item.Name}
-								startTime={item.StartTime}
-								endTime={item.EndTime}
-								objectId={item.objectId}
-								key={item.objectId}
-								deleteItem={deleteItem}
-							/>
-						))}
+						{props.timelineItems.map((item) => {
+							i++;
+							return (
+								<>
+									<TimelineItem
+										name={item.Name}
+										startTime={item.StartTime}
+										endTime={item.EndTime}
+										objectId={item.objectId}
+										key={item.objectId}
+										deleteItem={deleteItem}
+									/>
+									{props.timelineDirections &&
+										i <= props.timelineDirections.legs.length - 1 && (
+											<Directions
+												directions={props.timelineDirections.legs[i]}
+												key={item.objectId}
+											/>
+										)}
+								</>
+							);
+						})}
 					</div>
+					<button onClick={() => props.getTimelineDirections(true)}>
+						Get directions
+					</button>
 				</div>
 			)}
 		</>

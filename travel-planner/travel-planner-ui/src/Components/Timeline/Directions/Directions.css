@@ -1,0 +1,31 @@
+.timeline-route-preview {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.timeline-route-preview > .line {
+	margin: 0px 6px;
+}
+
+.route-info-preview-text {
+	font-size: 16px;
+	margin: 0px;
+	color: rgba(85, 38, 0, 0.6);
+	display: flex;
+	justify-content: space-evenly;
+	width: 120%;
+}
+
+.timeline-route-preview:hover .route-info-preview-text {
+	color: rgb(85, 38, 0);
+}
+
+.timeline-route-info {
+	overflow-y: scroll;
+	max-height: 36vh;
+}
+
+.timeline-route-info p {
+	font-size: 1.2vh;
+}
