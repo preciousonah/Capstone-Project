@@ -4,6 +4,7 @@ import Timeline from "../Timeline/Timeline";
 import Maps from "../Maps/Maps";
 import SelectTripPage from "../SelectTrip/SelectTrip";
 import SelectDirections from "../SelectDirections/SelectDirections";
+import Banner from "../Banner/Banner";
 import axios from "axios";
 import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../UserContext";
@@ -16,20 +17,23 @@ export default function Plan(props) {
 	const [tripDetails, setTripDetails] = useState(null);
 	const [directionsMode, setDirectionsMode] = useState(false);
 	const [directionsResults, setDirectionsResults] = useState(null);
-	const [walkingResults, setWalkingResults] = useState(null);
+	const [walkingResults, setWalkingResults] = useState(null); // combine these two directions into one dictionary, then only set the state after finishing (in the maps directions component)
 	const [drivingResults, setDrivingResults] = useState(null);
-	const previousVals = useRef({ walkingResults, drivingResults });
-	const [directionsOrigin, setDirectionsOrigin] = useState("");
-	const [directionsDestination, setDirectionsDestination] = useState("");
+	const previousVals = useRef({ walkingResults, drivingResults }); // delete
+	const [directionsPoint, setDirectionsPoint] = useState({
+		origin: "",
+		destination: "",
+	});
 	const [directionMarkers, setDirectionMarkers] = useState([]);
 	const { sessionToken } = useContext(UserContext);
 	const [markers, setMarkers] = useState(null);
 	const [updateMarkers, setUpdateMarkers] = useState(false);
 	const [timelineItems, setTimelineItems] = useState(null);
 	const [timeline, setTimeline] = useState(null);
-	const [timelineMarkers, setTimelineMarkers] = useState(null);
+	const [timelineMarkers, setTimelineMarkers] = useState(null); // combine this with timelineItems.
 	const [isGetTimelineDirections, setIsGetTimelineDirections] = useState(false);
 	const [timelineDirections, setTimelineDirections] = useState(null);
+	const [directions, setDirections] = useState([]);
 
 	// get the markers
 	useEffect(() => {
@@ -52,6 +56,25 @@ export default function Plan(props) {
 			fetchMarkers();
 		}
 	}, [tripDetails, updateMarkers]);
+
+	useEffect(() => {
+		// fetch directions for the mapId
+
+		if (tripDetails) {
+			const fetchSavedDirections = async () => {
+				const res = await axios.post(
+					`http://localhost:${PORT}/maps/getAllSavedDirections`,
+					{
+						mapId: tripDetails.objectId,
+					}
+				);
+
+				setDirections(res.data);
+			};
+
+			fetchSavedDirections().catch(console.error);
+		}
+	}, [tripDetails]);
 
 	useEffect(() => {
 		const fetchRecommendations = async () => {
@@ -103,7 +126,7 @@ export default function Plan(props) {
 		fetchRecommendations();
 	}, [walkingResults, drivingResults]);
 
-	const getDirections = () => {
+	const getDirections = async () => {
 		var directions = [];
 		let newEle = document.createElement("div");
 
@@ -113,30 +136,33 @@ export default function Plan(props) {
 			directions.push(newEle.innerText);
 		});
 
-		axios.post(`http://localhost:${PORT}/maps/createMapDirections`, {
-			type: directionsResults.type,
-			duration: directionsResults.result.duration,
-			distance: directionsResults.result.distance,
-			directions: directions,
-			origin: {
-				name: directionsOrigin,
-				address: directionsResults.result.start_address,
-				coordinate: directionMarkers[0],
-			},
-			destination: {
-				name: directionsDestination,
-				address: directionsResults.result.end_address,
-				coordinate: directionMarkers[1],
-			},
-			mapId: tripDetails.objectId,
-			reason: directionsResults.reason,
-		});
+		const res = await axios.post(
+			`http://localhost:${PORT}/maps/createMapDirections`,
+			{
+				type: directionsResults.type,
+				duration: directionsResults.result.duration,
+				distance: directionsResults.result.distance,
+				directions: directions,
+				origin: {
+					name: directionsPoint.origin,
+					address: directionsResults.result.start_address,
+					coordinate: directionMarkers[0],
+				},
+				destination: {
+					name: directionsPoint.destination,
+					address: directionsResults.result.end_address,
+					coordinate: directionMarkers[1],
+				},
+				mapId: tripDetails.objectId,
+				reason: directionsResults.reason,
+			}
+		);
 
+		setDirections((prev) => [...prev, res.data.direction]);
 		setDirectionsResults(null);
 		setDrivingResults(null);
 		setWalkingResults(null);
-		setDirectionsOrigin("");
-		setDirectionsDestination("");
+		setDirectionsPoint({ origin: "", destination: "" });
 	};
 
 	const [curNote, setCurNote] = useState({
@@ -144,6 +170,12 @@ export default function Plan(props) {
 		text: "",
 		markerId: null,
 	});
+
+	const archiveTrip = async () => {
+		axios.post(`http://localhost:${PORT}/maps/archiveMap`, {
+			mapId: tripDetails.objectId,
+		});
+	};
 
 	const render = () => {
 		return <h1>Not working</h1>;
@@ -154,85 +186,106 @@ export default function Plan(props) {
 			{!tripDetails ? (
 				<SelectTripPage setTripDetails={setTripDetails} />
 			) : (
-				<div className="plan-page main-page">
-					<div className="left-app">
-						<Wrapper apiKey={API_KEY} render={render}>
-							<div id="map">
-								<Maps
-									setCurNote={setCurNote}
-									trip={tripDetails}
-									directionsMode={directionsMode}
-									directionMarkers={directionMarkers}
-									setDirectionMarkers={setDirectionMarkers}
-									setDrivingResults={setDrivingResults}
-									setWalkingResults={setWalkingResults}
-									displayedMarkers={markers}
-									setUpdate={setUpdateMarkers}
-									setTimelineItems={setTimelineItems}
-									timeline={timeline}
-									setTimelineMarkers={setTimelineMarkers}
-									timelineMarkers={timelineMarkers}
-									isGetTimelineDirections={isGetTimelineDirections}
-									setIsGetTimelineDirections={setIsGetTimelineDirections}
-									setTimelineDirections={setTimelineDirections}
-								/>
+				<div className="plan-page">
+					<Banner
+						text={tripDetails.MapName}
+						imgSrc="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dHJvcGljYWwlMjBiZWFjaHxlbnwwfHwwfHw%3D&w=1000&q=80"
+					/>
+					<div className="main-page">
+						<div className="left-app">
+							<Wrapper apiKey={API_KEY} render={render}>
+								<div id="map">
+									<Maps
+										setCurNote={setCurNote}
+										trip={tripDetails}
+										directionsMode={directionsMode}
+										directionMarkers={directionMarkers}
+										setDirectionMarkers={setDirectionMarkers}
+										setDrivingResults={setDrivingResults}
+										setWalkingResults={setWalkingResults}
+										displayedMarkers={markers}
+										setUpdate={setUpdateMarkers}
+										setTimelineItems={setTimelineItems}
+										timeline={timeline}
+										setTimelineMarkers={setTimelineMarkers}
+										timelineMarkers={timelineMarkers}
+										isGetTimelineDirections={isGetTimelineDirections}
+										setIsGetTimelineDirections={setIsGetTimelineDirections}
+										setTimelineDirections={setTimelineDirections}
+									/>
+								</div>
+							</Wrapper>
+							<div className="map-settings-panel">
+								<div className="previous-directions-container">
+									<button
+										className="directions-mode-button"
+										onClick={() => {
+											setDirectionsMode(directionsMode ? false : true);
+										}}
+									>
+										<span>Directions Mode</span>{" "}
+										<span
+											className={
+												directionsMode
+													? "directions-mode-toggle directions-mode-toggle-on"
+													: "directions-mode-toggle"
+											}
+										>
+											{directionsMode ? "ON" : "OFF"}
+										</span>
+									</button>
+									{directionsResults ? (
+										<div className="save-directions-box">
+											<input
+												placeholder="Origin"
+												value={directionsPoint.origin}
+												onChange={(event) => {
+													const value = event.currentTarget.value;
+													setDirectionsPoint((prev) => ({
+														...prev,
+														origin: value,
+													}));
+												}}
+											/>
+											<input
+												placeholder="Destination"
+												value={directionsPoint.destination}
+												onChange={(event) => {
+													const value = event.currentTarget.value;
+													setDirectionsPoint((prev) => ({
+														...prev,
+														destination: value,
+													}));
+												}}
+											/>
+											<button onClick={getDirections}>Save directions</button>
+										</div>
+									) : null}
+								</div>
+								<div className="archive-button" onClick={() => archiveTrip()}>
+									<p>Archive</p>
+									<i className="fa-solid fa-box-archive"></i>
+								</div>
 							</div>
-						</Wrapper>
-						<button
-							className="directions-mode-button"
-							onClick={() => {
-								setDirectionsMode(directionsMode ? false : true);
-							}}
-						>
-							<span>Directions Mode</span>{" "}
-							<span
-								className={
-									directionsMode
-										? "directions-mode-toggle directions-mode-toggle-on"
-										: "directions-mode-toggle"
-								}
-							>
-								{directionsMode ? "ON" : "OFF"}
-							</span>
-						</button>
-						{directionsResults ? (
-							<div className="save-directions-box">
-								<input
-									placeholder="Origin"
-									value={directionsOrigin}
-									onChange={(event) =>
-										setDirectionsOrigin(event.currentTarget.value)
-									}
-								/>
-								<input
-									placeholder="Destination"
-									value={directionsDestination}
-									onChange={(event) =>
-										setDirectionsDestination(event.currentTarget.value)
-									}
-								/>
-								<button onClick={getDirections}>Save directions</button>
-							</div>
-						) : null}
-						<SelectDirections mapId={tripDetails.objectId} />
+							<SelectDirections directions={directions} />
+						</div>
+						<div className="right-app">
+							<Notes curNote={curNote} />
+							<Timeline
+								mapId={tripDetails.objectId}
+								setMarkers={setMarkers}
+								timelineItems={timelineItems}
+								setTimelineItems={setTimelineItems}
+								timeline={timeline}
+								setTimeline={setTimeline}
+								timelineMarkers={timelineMarkers}
+								setTimelineMarkers={setTimelineMarkers}
+								getTimelineDirections={setIsGetTimelineDirections}
+								timelineDirections={timelineDirections}
+							/>
+						</div>
+						<div className="directions-content"></div>
 					</div>
-					<div className="right-app">
-						<h1 className="map-title">{tripDetails.MapName}</h1>
-						<Notes curNote={curNote} />
-						<Timeline
-							mapId={tripDetails.objectId}
-							setMarkers={setMarkers}
-							timelineItems={timelineItems}
-							setTimelineItems={setTimelineItems}
-							timeline={timeline}
-							setTimeline={setTimeline}
-							timelineMarkers={timelineMarkers}
-							setTimelineMarkers={setTimelineMarkers}
-							getTimelineDirections={setIsGetTimelineDirections}
-							timelineDirections={timelineDirections}
-						/>
-					</div>
-					<div className="directions-content"></div>
 				</div>
 			)}
 		</>

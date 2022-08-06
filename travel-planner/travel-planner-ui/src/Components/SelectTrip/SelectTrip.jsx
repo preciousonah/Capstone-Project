@@ -23,7 +23,6 @@ function CreateNewTrip(props) {
 			center: newTripCenter,
 			sessionToken: props.sessionToken,
 		});
-		console.log("new trip response: ", res);
 		props.setFinalTripDetails(res.data);
 	};
 
@@ -70,6 +69,7 @@ export default function SelectTripPage(props) {
 	useEffect(async () => {
 		const res = await axios.post(`http://localhost:${PORT}/maps/getUserMaps`, {
 			sessionToken: sessionToken,
+			isArchived: false,
 		});
 
 		setTrips(res.data);
@@ -80,7 +80,6 @@ export default function SelectTripPage(props) {
 
 		trips.forEach((trip) => {
 			if (trip.objectId === tripId) {
-				console.log("Set new trip by selection!");
 				props.setTripDetails(trip);
 			}
 		});
@@ -97,7 +96,14 @@ export default function SelectTripPage(props) {
 					Select your trip!
 				</Dropdown.Toggle>
 
-				<Dropdown.Menu className="outer-dropdown" as={CustomMenu}>
+				<Dropdown.Menu
+					className="outer-dropdown"
+					onKeyDown={(event) => {
+						if (event.key === "Enter")
+							setCreatingTrip(event.currentTarget.value);
+					}}
+					as={CustomMenu}
+				>
 					{trips.map((trip) => (
 						<Dropdown.Item
 							key={trip.objectId}

@@ -11,18 +11,11 @@ export function UserContextProvider({ children }) {
 
 	const signUpUser = (signUpFormInput) => {
 		// Create new user account
-		axios
-			.post(`http://localhost:${PORT}/users/register`, {
-				username: signUpFormInput.username,
-				email: signUpFormInput.email,
-				password: signUpFormInput.password,
-			})
-			.then(function (response) {
-				console.log(response);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+		axios.post(`http://localhost:${PORT}/users/register`, {
+			username: signUpFormInput.username,
+			email: signUpFormInput.email,
+			password: signUpFormInput.password,
+		});
 
 		window.location.assign("/");
 	};
@@ -35,10 +28,9 @@ export function UserContextProvider({ children }) {
 			})
 			.then(function (response) {
 				setCookie("sessionToken", response.data.sessionToken, { path: "/" });
-				console.log(response);
 			})
 			.catch(function (error) {
-				console.log(error);
+				console.log("ERROR when logging in user", error);
 			});
 	};
 

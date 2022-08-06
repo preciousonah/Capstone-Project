@@ -27,7 +27,7 @@ export default function Notes({ curNote }) {
 		<div
 			className="notes-container"
 			style={{
-				height: isExpanded ? "auto" : "6vh",
+				height: isExpanded ? "84vh" : "6vh",
 				overflowY: isExpanded ? "scroll" : "hidden",
 			}}
 			onDoubleClick={() => {

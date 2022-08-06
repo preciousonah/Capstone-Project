@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 const Parse = require("parse/node");
 const axios = require("axios");
+const { query } = require("express");
 
 // TO-DO: create delete pin endpoint
 
@@ -34,7 +35,7 @@ router.post("/createMapDirections", async (req, res) => {
 		direction.set("Reason", reason);
 
 		direction.save().then(() => {
-			res.status(200).send({ message: "Success!" });
+			res.status(200).send({ direction: direction });
 		});
 	} catch (error) {
 		res.status(400).send({ message: error, type: "Error" });
@@ -106,6 +107,8 @@ router.post("/newMap", async (req, res) => {
 });
 
 router.post("/getUserMaps", async (req, res) => {
+	const isArchived = req.body.isArchived;
+
 	// fetch the user
 	let query = new Parse.Query("_Session");
 	query.equalTo("sessionToken", req.body.sessionToken);
@@ -119,6 +122,12 @@ router.post("/getUserMaps", async (req, res) => {
 			query
 				.find()
 				.then(function (maps) {
+					for (let i = maps.length - 1; i >= 0; i--) {
+						if (maps[i].get("Archived") != isArchived) {
+							maps.splice(i, 1);
+						}
+					}
+
 					res.status(200).send(maps);
 				})
 				.catch((error) => {
@@ -230,6 +239,24 @@ router.post("/getAddress", async (req, res) => {
 		.catch((error) => {
 			res.status(500).send({ message: error });
 		});
+});
+
+router.post("/archiveMap", async (req, res) => {
+	const mapId = req.body.mapId;
+
+	const query = new Parse.Query("Maps");
+	query.equalTo("objectId", mapId);
+	query.first().then((map) => {
+		map.set("Archived", true);
+		map
+			.save()
+			.then(() => {
+				res.status(200).send({ message: "Trip successfully archived." });
+			})
+			.catch((error) => {
+				res.status(400).send({ message: "ERROR when archiving trip." });
+			});
+	});
 });
 
 module.exports = router;

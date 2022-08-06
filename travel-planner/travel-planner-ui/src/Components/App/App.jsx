@@ -6,6 +6,7 @@ import Plan from "../Plan/Plan";
 import Login from "../Login/Login";
 import SignUp from "../SignUp/SignUp";
 import Overview from "../Overview/Overview";
+import History from "../History/History";
 import { UserContext } from "../../UserContext";
 
 export const PORT = 3001;
@@ -29,7 +30,8 @@ export default function App() {
 						) : (
 							<>
 								<Route path="/" element={<Overview />} />
-								<Route path="/plan" element={<Plan PORT={PORT} />} />
+								<Route path="/plan" element={<Plan />} />
+								<Route path="/history" element={<History />} />
 							</>
 						)}
 					</Routes>
