@@ -16,9 +16,9 @@ const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
 export default function Plan({ tripDetails }) {
 	const [directionsMode, setDirectionsMode] = useState(false);
 	const [directionsResults, setDirectionsResults] = useState(null);
-	const [walkingResults, setWalkingResults] = useState(null); // combine these two directions into one dictionary, then only set the state after finishing (in the maps directions component)
+	const [walkingResults, setWalkingResults] = useState(null);
 	const [drivingResults, setDrivingResults] = useState(null);
-	const previousVals = useRef({ walkingResults, drivingResults }); // delete
+	const previousVals = useRef({ walkingResults, drivingResults });
 	const [directionsPoint, setDirectionsPoint] = useState({
 		origin: "",
 		destination: "",
@@ -29,7 +29,7 @@ export default function Plan({ tripDetails }) {
 	const [updateMarkers, setUpdateMarkers] = useState(false);
 	const [timelineItems, setTimelineItems] = useState(null);
 	const [timeline, setTimeline] = useState(null);
-	const [timelineMarkers, setTimelineMarkers] = useState(null); // combine this with timelineItems.
+	const [timelineMarkers, setTimelineMarkers] = useState(null);
 	const [isGetTimelineDirections, setIsGetTimelineDirections] = useState(false);
 	const [timelineDirections, setTimelineDirections] = useState(null);
 	const [directions, setDirections] = useState([]);
