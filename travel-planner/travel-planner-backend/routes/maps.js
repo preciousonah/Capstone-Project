@@ -71,7 +71,6 @@ router.post("/newMap", async (req, res) => {
 		const lng = 0;
 
 		const Maps = Parse.Object.extend("Maps");
-		const Timelines = Parse.Object.extend("Timelines");
 
 		const map = new Maps();
 
@@ -82,7 +81,18 @@ router.post("/newMap", async (req, res) => {
 			if (session) {
 				const user = session.get("user");
 				if (user) {
+					console.log("user: ", user);
 					map.set("User", user);
+					map.set("MapName", title);
+					map.set(
+						"Center",
+						new Parse.GeoPoint({ latitude: lat, longitude: lng })
+					);
+					map.set("Archived", false);
+
+					map.save().then((newMap) => {
+						res.status(200).send(newMap);
+					});
 				} else {
 					res.status(400).send({ message: "ERROR: no user found." });
 				}
@@ -92,14 +102,6 @@ router.post("/newMap", async (req, res) => {
 					message: "ERROR: No session found for that token.",
 				});
 			}
-		});
-
-		map.set("MapName", title);
-		map.set("Center", new Parse.GeoPoint({ latitude: lat, longitude: lng }));
-		map.set("Timeline", new Timelines());
-
-		map.save().then((newMap) => {
-			res.status(200).send(newMap);
 		});
 	} catch (error) {
 		res.status(400).send({ typeStatus: "danger", message: error });
