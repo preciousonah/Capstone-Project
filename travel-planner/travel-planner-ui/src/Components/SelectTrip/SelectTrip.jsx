@@ -33,14 +33,14 @@ export default function SelectTrip({
 		}));
 	}, []);
 
-	if (!trips) {
+	if (!trips.allTrips) {
 		return <Loading />;
 	}
 
 	const onClickTripName = (event) => {
 		const tripId = event.currentTarget.getAttribute("data-objectid");
 
-		trips.forEach((trip) => {
+		trips.allTrips.forEach((trip) => {
 			if (trip.objectId === tripId) {
 				setTripDetails(trip);
 			}
@@ -88,7 +88,7 @@ export default function SelectTrip({
 					></input>
 				</div>
 			</div>
-			{trips.length === 0 && <h2>No trips found.</h2>}
+			{trips.allTrips.length === 0 && <h2>No trips found.</h2>}
 
 			{trips.filteredTrips.map((trip) => (
 				<div
