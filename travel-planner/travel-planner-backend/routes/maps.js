@@ -81,7 +81,6 @@ router.post("/newMap", async (req, res) => {
 			if (session) {
 				const user = session.get("user");
 				if (user) {
-					console.log("user: ", user);
 					map.set("User", user);
 					map.set("MapName", title);
 					map.set(
