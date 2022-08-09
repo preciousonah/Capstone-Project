@@ -3,12 +3,14 @@ import TimelineItem from "./TimelineItem/TimelineItem";
 import Loading from "../Loading/Loading";
 import SelectTimelineBubble from "./SelectTimeline/SelectTimeline";
 import Directions from "./Directions/Directions";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import ReactToPrint from "react-to-print";
 import axios from "axios";
 import { PORT } from "./../App/App";
 
 export default function Timeline(props) {
 	const [possibleTimelines, setPossibleTimelines] = useState(null);
+	let componentRef = useRef();
 
 	const deleteItem = async (itemToDeleteId) => {
 		//remove on backend
@@ -80,36 +82,47 @@ export default function Timeline(props) {
 			/>
 			{props.timelineItems && (
 				<div className="timeline-container">
-					<h2>Timeline</h2>
-					<p>{props.timeline.Date}</p>
-					<hr></hr>
-					<div className="timeline-markers">
-						{props.timelineItems.map((item) => {
-							i++;
-							return (
-								<>
-									<TimelineItem
-										name={item.Name}
-										startTime={item.StartTime}
-										endTime={item.EndTime}
-										objectId={item.objectId}
-										key={item.objectId}
-										deleteItem={deleteItem}
-									/>
-									{props.timelineDirections &&
-										i <= props.timelineDirections.legs.length - 1 && (
-											<Directions
-												directions={props.timelineDirections.legs[i]}
-												key={item.objectId}
-											/>
-										)}
-								</>
-							);
-						})}
+					<div
+						className="printable-timeline"
+						ref={(ele) => (componentRef = ele)}
+					>
+						<h2>Timeline</h2>
+						<p>{props.timeline.Date}</p>
+						<hr></hr>
+						<div className="timeline-markers">
+							{props.timelineItems.map((item) => {
+								i++;
+								return (
+									<>
+										<TimelineItem
+											name={item.Name}
+											startTime={item.StartTime}
+											endTime={item.EndTime}
+											objectId={item.objectId}
+											key={item.objectId}
+											deleteItem={deleteItem}
+										/>
+										{props.timelineDirections &&
+											i <= props.timelineDirections.legs.length - 1 && (
+												<Directions
+													directions={props.timelineDirections.legs[i]}
+													key={item.objectId}
+												/>
+											)}
+									</>
+								);
+							})}
+						</div>
 					</div>
-					<button onClick={() => props.getTimelineDirections(true)}>
-						Get directions
-					</button>
+					<div className="timeline-buttons">
+						<button onClick={() => props.getTimelineDirections(true)}>
+							Get directions
+						</button>
+						<ReactToPrint
+							trigger={() => <button>Print</button>}
+							content={() => componentRef}
+						/>
+					</div>
 				</div>
 			)}
 		</>

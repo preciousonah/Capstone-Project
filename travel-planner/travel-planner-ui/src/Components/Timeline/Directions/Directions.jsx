@@ -3,8 +3,6 @@ import { useState } from "react";
 
 export default function Directions({ directions }) {
 	const [isExpanded, setIsExpanded] = useState(false);
-	console.log("Directions: ", directions);
-
 	// Get the instructions since this is saved in an array form
 	var instructions = [];
 	let newEle = document.createElement("div");

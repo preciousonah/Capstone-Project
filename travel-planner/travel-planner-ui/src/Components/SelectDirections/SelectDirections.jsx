@@ -7,28 +7,10 @@ import CustomMenu from "./../Dropdown/CustomMenu";
 import DirectionReasonBubble from "./DirectionReasonBubble/DirectionReasonBubble";
 import { PORT } from "./../App/App";
 
-export default function SelectDirections({ mapId }) {
+export default function SelectDirections({directions }) {
 	// get all directions from backend
-	const [directions, setDirections] = useState(null);
 	const [curDirections, setCurDirections] = useState(null);
 	const [isInfoBubbleShown, setIsInfoBubbleShown] = useState(false);
-
-	useEffect(() => {
-		// fetch directions for the mapId
-
-		const fetchSavedDirections = async () => {
-			const res = await axios.post(
-				`http://localhost:${PORT}/maps/getAllSavedDirections`,
-				{
-					mapId: mapId,
-				}
-			);
-
-			setDirections(res.data);
-		};
-
-		fetchSavedDirections().catch(console.error);
-	}, []);
 
 	const openDirection = (event) => {
 		const directionId = event.currentTarget.getAttribute("data-objectid");

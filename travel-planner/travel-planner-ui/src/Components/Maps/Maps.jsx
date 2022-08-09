@@ -32,7 +32,6 @@ export default function Maps({
 
 	const mapInit = () => {
 		useEffect(() => {
-			console.log("Map rerendered!");
 			if (ref.current && !map) {
 				setMap(
 					new window.google.maps.Map(ref.current, {

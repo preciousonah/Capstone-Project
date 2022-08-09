@@ -5,6 +5,7 @@ body {
 	overflow-x: hidden;
 	font-size: 1.6vh;
 	overflow-y: overlay;
+	background-color: rgba(255, 252, 234, 0.747);
 }
 
 a {
@@ -24,13 +25,13 @@ button {
 	font-family: "Nunito", sans-serif;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
 	color: transparent;
 	background-color: transparent;
 	width: 5px;
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: rgba(85, 38, 0, 0.397);
+	background-color: rgba(85, 38, 0, 0.397);
 	border-radius: 40px;
 }
