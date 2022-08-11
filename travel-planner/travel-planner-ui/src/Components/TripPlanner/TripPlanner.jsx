@@ -13,7 +13,12 @@ import { PORT } from "./../App/App";
 
 const API_KEY = "AIzaSyDUuAbmaWWY2Lk6iKlktVEPRAIrTI0__eg";
 
-export default function Plan({ tripDetails }) {
+export default function Plan({
+	tripDetails,
+	setIsArchived,
+	isArchived = false,
+	setChangeBackground,
+}) {
 	const [directionsMode, setDirectionsMode] = useState(false);
 	const [directionsResults, setDirectionsResults] = useState(null);
 	const [walkingResults, setWalkingResults] = useState(null);
@@ -174,6 +179,8 @@ export default function Plan({ tripDetails }) {
 		axios.post(`http://localhost:${PORT}/maps/archiveMap`, {
 			mapId: tripDetails.objectId,
 		});
+
+		setIsArchived(true);
 	};
 
 	const render = () => {
@@ -182,10 +189,20 @@ export default function Plan({ tripDetails }) {
 
 	return (
 		<div className="trip-plan-page">
-			<Banner
-				text={tripDetails.MapName}
-				imgSrc="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dHJvcGljYWwlMjBiZWFjaHxlbnwwfHwwfHw%3D&w=1000&q=80"
-			/>
+			<div className="trip-banner-container">
+				<i
+					onClick={() => setChangeBackground(true)}
+					className="fa-solid fa-image"
+				></i>
+				<Banner
+					text={
+						isArchived
+							? tripDetails.MapName + " (Archived)"
+							: tripDetails.MapName
+					}
+					imgSrc={tripDetails.Background}
+				/>
+			</div>
 			<div className="main-page">
 				<div className="left-app">
 					<Wrapper apiKey={API_KEY} render={render}>
@@ -210,58 +227,60 @@ export default function Plan({ tripDetails }) {
 							/>
 						</div>
 					</Wrapper>
-					<div className="map-settings-panel">
-						<div className="previous-directions-container">
-							<button
-								className="directions-mode-button"
-								onClick={() => {
-									setDirectionsMode(directionsMode ? false : true);
-								}}
-							>
-								<span>Directions Mode</span>{" "}
-								<span
-									className={
-										directionsMode
-											? "directions-mode-toggle directions-mode-toggle-on"
-											: "directions-mode-toggle"
-									}
+					{!isArchived && (
+						<div className="map-settings-panel">
+							<div className="previous-directions-container">
+								<button
+									className="directions-mode-button"
+									onClick={() => {
+										setDirectionsMode(directionsMode ? false : true);
+									}}
 								>
-									{directionsMode ? "ON" : "OFF"}
-								</span>
-							</button>
-							{directionsResults ? (
-								<div className="save-directions-box">
-									<input
-										placeholder="Origin"
-										value={directionsPoint.origin}
-										onChange={(event) => {
-											const value = event.currentTarget.value;
-											setDirectionsPoint((prev) => ({
-												...prev,
-												origin: value,
-											}));
-										}}
-									/>
-									<input
-										placeholder="Destination"
-										value={directionsPoint.destination}
-										onChange={(event) => {
-											const value = event.currentTarget.value;
-											setDirectionsPoint((prev) => ({
-												...prev,
-												destination: value,
-											}));
-										}}
-									/>
-									<button onClick={getDirections}>Save directions</button>
-								</div>
-							) : null}
+									<span>Directions Mode</span>{" "}
+									<span
+										className={
+											directionsMode
+												? "directions-mode-toggle directions-mode-toggle-on"
+												: "directions-mode-toggle"
+										}
+									>
+										{directionsMode ? "ON" : "OFF"}
+									</span>
+								</button>
+								{directionsResults ? (
+									<div className="save-directions-box">
+										<input
+											placeholder="Origin"
+											value={directionsPoint.origin}
+											onChange={(event) => {
+												const value = event.currentTarget.value;
+												setDirectionsPoint((prev) => ({
+													...prev,
+													origin: value,
+												}));
+											}}
+										/>
+										<input
+											placeholder="Destination"
+											value={directionsPoint.destination}
+											onChange={(event) => {
+												const value = event.currentTarget.value;
+												setDirectionsPoint((prev) => ({
+													...prev,
+													destination: value,
+												}));
+											}}
+										/>
+										<button onClick={getDirections}>Save directions</button>
+									</div>
+								) : null}
+							</div>
+							<div className="archive-button" onClick={() => archiveTrip()}>
+								<p>Archive</p>
+								<i className="fa-solid fa-box-archive"></i>
+							</div>
 						</div>
-						<div className="archive-button" onClick={() => archiveTrip()}>
-							<p>Archive</p>
-							<i className="fa-solid fa-box-archive"></i>
-						</div>
-					</div>
+					)}
 					<SelectDirections directions={directions} />
 				</div>
 				<div className="right-app">
