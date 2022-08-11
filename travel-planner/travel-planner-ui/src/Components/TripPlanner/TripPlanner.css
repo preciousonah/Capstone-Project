@@ -78,3 +78,19 @@
 	font-size: 14px;
 	transition: ease-in-out 0.8s;
 }
+
+.trip-banner-container {
+	position: relative;
+}
+
+.trip-banner-container>button {
+	position: absolute;
+	right: 18px;
+	top: 18px;
+	z-index: 10;
+	opacity: 30%;
+}
+
+.trip-banner-container>button:hover {
+	opacity: 60%
+}

@@ -11,6 +11,8 @@
 
 .select-trip-page-top > h1 {
 	width: auto;
+	text-decoration: underline;
+	letter-spacing: 4px;
 }
 
 .trip-search {

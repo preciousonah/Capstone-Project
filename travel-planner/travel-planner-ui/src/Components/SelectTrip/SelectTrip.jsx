@@ -19,7 +19,7 @@ export default function SelectTrip({
 		allTrips: null,
 	});
 
-	// Get archived trips from database
+	// Get trips from database
 	useEffect(async () => {
 		const res = await axios.post(`http://localhost:${PORT}/maps/getUserMaps`, {
 			sessionToken: sessionToken,
@@ -92,7 +92,7 @@ export default function SelectTrip({
 
 			{trips.filteredTrips.map((trip) => (
 				<div
-					key={trip.mapName}
+					key={trip.objectId}
 					data-objectid={trip.objectId}
 					onClick={onClickTripName}
 					className="trip-option"
@@ -100,7 +100,7 @@ export default function SelectTrip({
 					<Banner
 						text={trip.MapName}
 						cursorStyle={"pointer"}
-						imgSrc="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dHJvcGljYWwlMjBiZWFjaHxlbnwwfHwwfHw%3D&w=1000&q=80"
+						imgSrc={trip.Background}
 					/>
 				</div>
 			))}
