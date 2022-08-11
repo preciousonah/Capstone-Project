@@ -190,7 +190,10 @@ export default function Plan({
 	return (
 		<div className="trip-plan-page">
 			<div className="trip-banner-container">
-				<button onClick={() => setChangeBackground(true)}>Hello</button>
+				<i
+					onClick={() => setChangeBackground(true)}
+					className="fa-solid fa-image"
+				></i>
 				<Banner
 					text={
 						isArchived
