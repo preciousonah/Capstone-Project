@@ -1,7 +1,8 @@
 .backdrop-container {
 	height: 16vh;
 	position: relative;
-	overflow: hidden;
+	overflow: wrap;
+	overflow-wrap: break-word;
 	box-shadow: rgba(85, 38, 0, 0.17) 0px -23px 25px 0px inset,
 		rgba(85, 38, 0, 0.15) 0px -36px 30px 0px inset,
 		rgba(85, 38, 0, 0.1) 0px -79px 40px 0px inset,
@@ -19,7 +20,6 @@
 }
 
 .backdrop-container > h1 {
-	font-size: 80px;
 	color: white;
 	text-align: center;
 	position: absolute;

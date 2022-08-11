@@ -1,5 +1,6 @@
 .plan-page {
 	overflow-y: auto;
+	margin-top: 3vh;
 }
 
 .is-archived-popup {
