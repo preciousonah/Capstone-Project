@@ -1,11 +1,9 @@
 ### Music Messaging - Website
 
-
 ## User Stories
 
 **User role:** Listener
 -  A user who wants to listen to music, chat with friends and find her favorite fashion fits online
-
 
 **User personas:**
 - Name: Victoria
