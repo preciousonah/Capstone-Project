@@ -1,85 +1,35 @@
-### Travel Planning - Website
-
-## Description
-
-When planning a trip to a new (or old) place, we're often using multiple pages, apps, and websites to find the most popular places to visit, the order to visit each one, and what to do at each location. This website woll provide a central location for all trip planning. It will include a map where you can pin any places you want, recommend the best method of transportation for those, let you link locations, create to-do lists, find information on the city, and more.
-
-## Usage
-
-You will need api keys from Parse, Google Maps, and Position Stack. Please message @KimberlyTruong privately for these keys.
-
-**Steps:**
-1. Clone this repo.
-2. Run ```npm install``` in travel-planner-ui AND travel-planner-backend.
-3. Copy the API keys to .env files in travel-planner-ui and travel-planner-backend respectively.
-4. Type ```npm run dev``` in both travel-planner-ui AND travel-planner-backend.
-5. Feel free to user username: ```testing``` and password: ```testing101``` or create your own account.
+### Music Messaging - Website
 
 ## User Stories
 
-**User role:** Planner
--  A user who wants to plan a trip
+**User role:** Listener
+-  A user who wants to listen to music, chat with friends and find her favorite fashion fits online
 
 **User personas:**
-- Name: Samantha
-    - Location: Canby, OR (rural area)
-    - Age: 35
+- Name: Victoria
+    - Location: Manhattan, NY
+    - Age: 21
     - Technology usage and familliarity:
-        - Limited usage. Samantha knows how to use basic website functionalities for remote work such as search, accessing video calls, naviagating through simple sites, etc. Samantha mainly uses their computer for work and rarely interacts with technology outside of that. Samantha enjoys her time in nature.
-    - Motivation:
-        - Although Samantha doesn't like to interact with technology much, Samantha does like to travel and explore once in a while. Samantha has limited experience traveling (being in a rural area), so they like every trip to be perfect and only include exactly what they like. Samantha wants to plan an organized, efficient, and successful trip while limiting their interactions with technology.
-    - Potential pain points:
-        - Won't be as open to new features. Samantha prefers simplicity.
-        - Wants transparency when it comes to the locations on their trip
-        - Hesitant to travel outside of their area so Samantha requires simple, easy-to-understand information
+        - Victoria is a tech-savvy Gen Z individual who is highly proficient in using social media platforms and navigating various technologies. She has been using a smartphone since she was 8 years old and relies on it heavily for daily activities. She is also comfortable using her computer for school and personal projects. Victoria frequently accessed websites and social media platforms, particularly for music-related content.
 
-- Name: Andy
-    - Location: Boston, MA
-    - Age: 24
-    - Technology usage and familiarity:
-        - Very familiar, but no technical expertise. Andy is a trip planner and has worked on many different platforms to plan trips for their clients. Andy primarily uses their phone very often to keep up to date with the latest trends on Instagram and travel blogs. Andy also uses a laptop to do his work.
-        - Andy would access my site almost daily to ensure all his client's trips are going smoothly.
-    - Motivations:
-        - Andy would use this website to assist with their work. Andy is tired of having over twenty tabs open every time he plans a single trip. They want a more central location to note good locations to visit, distances between each one, and the order to visit each location.
+    - Motivation:
+        - Victoria is a passionate music lover who enjoys discovering new songs, artists, and genres. She spends a significant portion of her day listening to music and stays up to date with the latest trends in the music industry. She seeks a platform where she can connect with fellow music enthusiasts, share her favorite songs and playlists, and explore new recommendations. Additionally, Victoria's interest in fashion motivates her to find a platform that combines music and fashion, allowing her to explore the interplay between these two art forms.
+
     - Potential pain points:
-        - Needs access to many trip plans simultaneously. Andy's schedule is very hectic so they need a very organized app that can be personalized.
-        - Needs to fully understand all website functionality since they will be sending the trip plans to their clients and will need to help their clients understand as well.
-        - Andy wants to be very detailed when planning.
+        - Victoria prefers using platforms that are popular and widely used. She may hesitate to join a music messaging platform if it is not mainstream
+        -  Victoria values websites that are intuitive and easy to navigate. If a platform is complex or lacks clear organization, she may find it frustrating and may lose interest
+        - Victoria can be indecisive about styles, so she appreciates platforms that offer diverse fashion inspirations
 
 
 **User stories:**
-- As a traveller, I want to find the best locations to visit in this new city.
-- As a traveller, I need to know the best way to get to each location.
-- As a traveller, I want to be able to access this planning website even while on the road (through my phone).
-- As a traveller, I want to print out my itinerary after planning it online.
-- As a planner, I want to find the best order of places to visit to maximize the amount of time I have at each location.
-- As a planner, I want to personalize my website/planner.
-- As a planner, I want to create different lists so my ideas don't become convoluted.
-- As a planner, I want to personalize my places to visit so I can have my own lists and categories.
-- As a planner, I want to save information about each place I might visit without exiting the planner website.
-- As a planner, I want to filter for locations by category.
-- As a planner, I want to find what other travelers in the same area choose to do so I can use their plan as a template for my own.
-- As a planner, I want to connect and group locations based on their type or distance so I can efficiently visit each one.
-- As a planner, I want to save past trips so I can reflect and know what I should do in the future.
-- As a planner, I want to filter the events by days.
+- As a music enthusiast, I want to discover and listen to my favorite music online, and have the option to access it offline.
+- As a listener, I want to be able to easily share the songs I'm currently listening to with my friends through text or messaging.
+- As a listener, I want to create playlists based on my mood or genre preferences, so that I can easily access and enjoy a curated collection of songs.
+- As a listener, I want to receive personalized music recommendations based on my listening history and preferences, so that I can discover new artists 
+- As a user, I want a seamless and intuitive user interface that makes it easy to navigate, search for songs, and manage my music library, so that I can have a smooth and enjoyable experience using the platform.
+- As a user, I want to be able to create and join music communities or forums, where I can connect with like-minded individuals, discuss music and get more recommendations 
+- As a fashion enthusiast, I want to explore a wide range of fashion trends, styles, and inspiration, so that I can stay updated with the latest fashion trends and discover new ideas for my own outfits
+- As a user, I want a visually captivating and aesthetically pleasing webpage design
+- As a fashion lover, I want to have access to a comprehensive fashion search feature that allows me to filter and find specific clothing items based on music genre
+- As a music enthusiast, I want to have access to high-quality audio streaming or download options
 
-## Limitations
-- The Google Maps API gives you $200 per month to use, but once you surpass that (too many API calls), you will be charged. This means there is a limit to how often this site can be tested/used (and by how many users)
-    - I will need to add something in the code to send an error and not call the api when near the max quota.
-    - This will be difficult to test. (only 40,000 requests for directions can be made per month)
-    - Embedding the map is free. This will only affect getting directions.
-    - It may not be feasible to calculate directions on this website. This may need to be left up to the user.
-    - Check out personal alternatives here: https://www.igismap.com/top-10-map-direction-api-routing-libraries-navigation-free-or-paid/
-- Can I webscrape Google Search Results? (need to learn)
-    - This will get the recommendations of things to do
-    
-## Notes
-  - Walkability score api: https://www.walkscore.com/professional/api.php
-  - Elevation data api: https://www.opentopodata.org/
-    - 1000 calls per day max
-  - Geocoding api: https://developers.google.com/maps/documentation/geocoding/overview
-    - in case I need to convert addresses to coordinates for other api calls (or vice versa)
-  - Weather api: https://openweathermap.org/api
-    - 1000 calls per day
-  - Changing map markers (put pictures/icons, change color): https://developers.google.com/maps/documentation/javascript/custom-markers#maps_custom_markers-html
-  - Embed map and edit the embedding: https://developers.google.com/maps/documentation/embed/map-generator
