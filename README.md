@@ -3,23 +3,22 @@
 ## User Stories
 
 **User role:** Listener
--  A user who wants to search for fashion ideas based on a music genre and chat with friends online
 
+-  A user who wants to search for fashion ideas based on a music genre and chat with friends online
 
 **User personas:**
 - Name: Victoria
     - Location: Manhattan, NY
     - Age: 21
     - Technology usage and familliarity:
-        - Technology savvy: Victoria is a tech-savvy Gen Z individual who is highly proficient in using social media platforms and navigating various technologies. She has been using a smartphone since she was 8 years old and relies on it heavily for daily activities. She is also comfortable using her computer for school and personal projects. Victoria frequently accesses websites and social media platforms, particularly for music and fashion-related content.
-
+        - Technology savvy: Victoria is a tech-savvy Gen Z individual who is highly proficient in using social media platforms and navigating various technologies. She has been using a smartphone since she was 8 years old and relies on it heavily for daily activities. She is also comfortable using her computer for school and personal projects. Victoria frequently accesses websites and social media platforms, particularly for music and fashion-related content
 
     - Motivation:
         - Victoria is a passionate music and fashion lover who enjoys discovering new songs, artists, and genres. She spends a significant portion of her day listening to music, scrolling on pinterest and stays up to date with the latest trends in both industries. She seeks a platform where she can connect with like-minded individuals, share her favorite fashion ideas, and explore new recommendations. She seeks a platform that will allow her to explore the intersection of these two art forms
 
 
     - Potential pain points:
-        - Victoria prefers using platforms that are popular and widely used. She may hesitate to join a music inspired fashion website iif it is not mainstream
+        - Victoria prefers using platforms that are popular and widely used. She may hesitate to join a music inspired fashion website if it is not mainstream
         -  Victoria values websites that are intuitive and easy to navigate. If a platform is complex or lacks clear organization, she may find it frustrating and may lose interest
         - Victoria can be indecisive about styles, so she appreciates platforms that offer diverse fashion inspirations
 
